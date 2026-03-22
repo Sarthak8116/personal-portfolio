@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sarthak Jain — ECE & Robotics @ CMU. Robots, AI, embedded systems, startup.">
+<title>Sarthak Jain — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root {
+  --bg: #050505;
+  --bg2: #0a0a0a;
+  --surface: #0f0f12;
+  --surface2: #161619;
+  --surface3: #1c1c20;
+  --border: #222228;
+  --border-h: #333340;
+  --text: #eeeee8;
+  --text2: #a0a098;
+  --text3: #666660;
+  --accent: #ff3c2e;
+  --accent-h: #ff5a4a;
+  --accent-d: #cc3024;
+  --accent-glow: rgba(255,60,46,0.10);
+  --white: #fff;
+  --display: 'Inter', system-ui, sans-serif;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --mono: 'JetBrains Mono', monospace;
+  --ease: cubic-bezier(0.22,1,0.36,1);
+  --grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--text);font-family:var(--display);font-size:16px;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{border:none;background:none;cursor:pointer;font:inherit;color:inherit}
+img{max-width:100%;display:block}
+::selection{background:var(--accent);color:var(--white)}
+
+/* Grain */
+body::after{content:'';position:fixed;inset:0;background:var(--grain);pointer-events:none;z-index:9998;opacity:0.5}
+
+/* ============================================================
+   CURSOR
+   ============================================================ */
+.cursor{width:8px;height:8px;background:var(--accent);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:10000;mix-blend-mode:difference;opacity:0;transition:transform 0.12s var(--ease),opacity 0.3s}
+body.cursor-on .cursor{opacity:1}
+
+/* ============================================================
+   INTRO OVERLAY
+   ============================================================ */
+.intro{position:fixed;inset:0;z-index:9999;background:var(--accent);display:grid;place-items:center;transition:clip-path 1.2s var(--ease);clip-path:inset(0 0 0 0)}
+.intro.done{clip-path:inset(0 0 100% 0);pointer-events:none}
+.intro-txt{font-family:var(--display);font-size:clamp(3rem,10vw,8rem);font-weight:900;color:var(--white);letter-spacing:-0.04em}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(5,5,5,0.82);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--border);transition:transform 0.4s var(--ease)}
+.nav.hidden{transform:translateY(-100%)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0 2rem;height:60px;display:flex;align-items:center;gap:2rem}
+.nav-logo{display:flex;align-items:center;gap:0.5rem;font-family:var(--display);font-weight:800;font-size:1rem;letter-spacing:-0.02em;text-transform:uppercase;white-space:nowrap}
+.nav-logo .dot{color:var(--accent);font-size:0.6rem}
+.nav-links{display:flex;gap:0.25rem;margin-left:auto}
+.nav-link{font-family:var(--mono);font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;padding:0.5rem 0.8rem;color:var(--text2);position:relative;transition:color 0.25s}
+.nav-link::after{content:'';position:absolute;bottom:0;left:50%;width:0;height:2px;background:var(--accent);transition:width 0.3s var(--ease),left 0.3s var(--ease)}
+.nav-link:hover,.nav-link.active{color:var(--text)}
+.nav-link:hover::after,.nav-link.active::after{width:100%;left:0}
+.nav-right{display:flex;align-items:center;gap:0.75rem}
+.nav-cta{display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 1.1rem;background:var(--accent);color:var(--white);font-family:var(--mono);font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);transition:background 0.25s}
+.nav-cta:hover{background:var(--accent-h)}
+.menu-toggle{display:none;flex-direction:column;gap:5px;width:22px}
+.menu-toggle span{display:block;width:100%;height:2px;background:var(--text);transition:transform 0.3s var(--ease),opacity 0.3s}
+.menu-toggle.open span:first-child{transform:translateY(3.5px) rotate(45deg)}
+.menu-toggle.open span:last-child{transform:translateY(-3.5px) rotate(-45deg)}
+.mobile-menu{position:fixed;inset:0;z-index:99;background:var(--bg);display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity 0.4s var(--ease)}
+.mobile-menu.open{opacity:1;pointer-events:auto}
+.mobile-nav{display:flex;flex-direction:column;align-items:center;gap:1.5rem}
+.mobile-link{font-family:var(--display);font-size:1.8rem;font-weight:800;text-transform:uppercase;letter-spacing:-0.02em;color:var(--text2);transition:color 0.2s}
+.mobile-link:hover{color:var(--accent)}
+.mobile-link.cta{font-size:1.1rem;color:var(--accent);margin-top:1rem}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:calc(60px + 3rem) 2rem 2rem;max-width:1400px;margin:0 auto;position:relative}
+.hero-badge{display:inline-flex;align-items:center;gap:0.6rem;padding:0.4rem 1rem;background:var(--surface);border:1px solid var(--border);font-family:var(--mono);font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text2);width:fit-content;margin-bottom:2rem}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.5)}}
+.hero h1{font-family:var(--display);font-size:clamp(4rem,14vw,12rem);font-weight:900;line-height:0.88;letter-spacing:-0.05em;text-transform:uppercase}
+.hero .line{display:block;overflow:hidden}
+.hero .accent-dot{display:inline-block;width:clamp(10px,1.8vw,22px);height:clamp(10px,1.8vw,22px);background:var(--accent);border-radius:50%;margin-left:0.1em;vertical-align:0.12em}
+.hero-grid{display:grid;grid-template-columns:1.2fr 0.8fr;gap:2rem;margin-top:3rem;align-items:start}
+.hero-desc{font-size:clamp(1rem,1.8vw,1.25rem);line-height:1.5;color:var(--text2);max-width:48ch;margin-bottom:1.5rem}
+.hero-actions{display:flex;flex-wrap:wrap;gap:0.75rem}
+.btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.65rem 1.4rem;font-family:var(--mono);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;border:1px solid var(--border);background:var(--surface);color:var(--text);position:relative;overflow:hidden;transition:all 0.25s var(--ease)}
+.btn::before{content:'';position:absolute;inset:0;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform 0.35s var(--ease);z-index:0}
+.btn:hover::before{transform:scaleX(1)}
+.btn span,.btn .bi{position:relative;z-index:1}
+.btn:hover{border-color:var(--accent);color:var(--white)}
+.btn-primary{background:var(--accent);border-color:var(--accent-d);color:var(--white)}
+.btn-primary::before{background:var(--accent-h)}
+.bi{font-size:0.85em;transition:transform 0.25s var(--ease)}
+.btn:hover .bi{transform:translateX(3px)}
+/* Hero card */
+.hero-card{background:var(--surface);border:1px solid var(--border);padding:1.5rem;display:flex;flex-direction:column;align-items:center;gap:1.2rem}
+.hc-visual{width:100%;aspect-ratio:1;max-width:200px;background:#050505;border:1px solid #1a1a1a;position:relative;display:grid;place-items:center}
+.hc-core{width:56px;height:56px;border-radius:5px;background:#0a0a0a;border:1px solid #2a2a2a;color:var(--text);display:grid;place-items:center;font-family:var(--display);font-size:1.2rem;font-weight:900;text-transform:uppercase}
+.br{position:absolute;width:12px;height:12px;border-color:var(--accent);border-style:solid}
+.br.tl{top:8px;left:8px;border-width:2px 0 0 2px}
+.br.tr{top:8px;right:8px;border-width:2px 2px 0 0}
+.br.bl{bottom:8px;left:8px;border-width:0 0 2px 2px}
+.br.bbr{bottom:8px;right:8px;border-width:0 2px 2px 0}
+.hc-meta{display:flex;gap:1.5rem;font-family:var(--mono);font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3)}
+
+/* Marquee */
+.marquee{margin-top:4rem;border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;align-items:stretch;overflow:hidden}
+.marquee-label{flex-shrink:0;display:flex;align-items:center;padding:0 1.5rem;background:var(--surface);border-right:1px solid var(--border);font-family:var(--mono);font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);white-space:nowrap}
+.marquee-wrap{flex:1;overflow:hidden}
+.marquee-track{display:flex;align-items:center;min-width:max-content;animation:scroll 30s linear infinite}
+.marquee-item{display:inline-flex;align-items:center;justify-content:center;min-width:140px;height:48px;padding:0 1.3rem;border-right:1px solid var(--border);font-family:var(--mono);font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text2);white-space:nowrap;transition:color 0.2s,background 0.2s}
+.marquee-item:hover{color:var(--accent);background:var(--surface)}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+.section{padding:6rem 2rem;max-width:1400px;margin:0 auto;position:relative}
+.section-dark{background:var(--bg2);max-width:none;padding-left:0;padding-right:0}
+.section-dark > .s-top,
+.section-dark > .project-grid,
+.section-dark > .about-cols,
+.section-dark > .contact-wrap{max-width:1400px;margin-left:auto;margin-right:auto;padding-left:2rem;padding-right:2rem}
+.s-top{margin-bottom:3rem}
+.s-label{display:inline-flex;align-items:center;gap:0.75rem;margin-bottom:1rem;font-family:var(--mono);font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3)}
+.s-idx{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border:1px solid var(--accent);color:var(--accent);font-size:0.58rem;font-weight:800}
+.s-title{font-family:var(--display);font-size:clamp(2rem,5vw,4rem);font-weight:900;line-height:0.95;letter-spacing:-0.04em;text-transform:uppercase}
+.s-sub{font-size:0.88rem;color:var(--text2);max-width:48ch;margin-top:0.75rem;line-height:1.6}
+
+/* ============================================================
+   PROJECT GRID
+   ============================================================ */
+.project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border)}
+.p-card{background:var(--surface);padding:1.5rem;min-height:170px;display:flex;flex-direction:column;justify-content:space-between;position:relative;transition:background 0.3s;cursor:pointer;text-decoration:none;color:var(--text)}
+.p-card:hover{background:var(--surface2)}
+.p-card:hover .p-arrow{color:var(--accent);transform:translate(3px,-3px)}
+.p-num{font-family:var(--mono);font-size:0.65rem;font-weight:700;color:var(--accent)}
+.p-title{font-family:var(--mono);font-size:0.78rem;font-weight:700;text-transform:uppercase;line-height:1.3;margin-top:0.5rem}
+.p-tag{font-family:var(--mono);font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-top:0.4rem}
+.p-arrow{align-self:flex-end;font-size:1rem;color:var(--text3);transition:color 0.25s,transform 0.25s var(--ease)}
+
+/* ============================================================
+   ABOUT
+   ============================================================ */
+.about-cols{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)}
+.about-cell{background:var(--surface);padding:2.5rem 2rem}
+.about-cell h3{font-family:var(--mono);font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:1rem;color:var(--accent)}
+.about-cell p{font-size:0.88rem;color:var(--text2);line-height:1.7;margin-bottom:1rem}
+.about-cell p:last-child{margin-bottom:0}
+.exp-item{padding:1rem 0;border-bottom:1px solid var(--border)}
+.exp-item:last-child{border-bottom:none}
+.exp-role{font-family:var(--mono);font-size:0.75rem;font-weight:700;text-transform:uppercase}
+.exp-org{font-size:0.82rem;color:var(--text2);margin-top:0.2rem}
+.exp-date{font-family:var(--mono);font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-top:0.3rem}
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+.contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)}
+.contact-cell{background:var(--surface);padding:2.5rem 2rem}
+.contact-cell h3{font-family:var(--mono);font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:1.5rem;color:var(--accent)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.form-group{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:0.5rem}
+.form-group label{font-family:var(--mono);font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3)}
+.form-group input,.form-group textarea{background:var(--bg);border:1px solid var(--border);padding:0.7rem 1rem;color:var(--text);font-family:var(--mono);font-size:0.8rem;transition:border-color 0.2s;outline:none;resize:vertical}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--accent)}
+.btn-full{width:100%;justify-content:center;margin-top:0.5rem}
+.contact-links{display:flex;flex-direction:column;gap:1rem;margin-top:1rem}
+.contact-links a{font-family:var(--mono);font-size:0.78rem;color:var(--text2);transition:color 0.2s;display:flex;align-items:center;gap:0.5rem}
+.contact-links a:hover{color:var(--accent)}
+.contact-links .cl-label{font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;width:60px;flex-shrink:0}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer{border-top:1px solid var(--border);padding:3rem 2rem 2rem;max-width:1400px;margin:0 auto}
+.footer-inner{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2rem}
+.footer-brand h3{font-family:var(--display);font-weight:800;font-size:1.1rem;margin-bottom:0.5rem}
+.footer-brand p{font-size:0.82rem;color:var(--text2);max-width:30ch}
+.footer-col h4{font-family:var(--mono);font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:0.8rem}
+.footer-col a{display:block;font-size:0.82rem;color:var(--text2);margin-bottom:0.4rem;transition:color 0.2s}
+.footer-col a:hover{color:var(--accent)}
+.footer-bottom{border-top:1px solid var(--border);padding-top:1.5rem;font-family:var(--mono);font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
+.anim{opacity:0;transform:translateY(25px);transition:opacity 0.7s var(--ease),transform 0.7s var(--ease)}
+.anim.show{opacity:1;transform:translateY(0)}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media(max-width:900px){
+  .nav-links,.nav-right{display:none}
+  .menu-toggle{display:flex}
+  .hero h1{font-size:clamp(3rem,12vw,6rem)}
+  .hero-grid{grid-template-columns:1fr}
+  .hero-card{display:none}
+  .project-grid{grid-template-columns:1fr}
+  .about-cols{grid-template-columns:1fr}
+  .contact-wrap{grid-template-columns:1fr}
+  .footer-inner{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .marquee-label{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Intro -->
+<div class="intro" id="intro"><div class="intro-txt">SJ</div></div>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+
+<!-- Nav -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#top" class="nav-logo"><span class="dot">&#9650;</span> SARTHAK</a>
+    <nav class="nav-links">
+      <a href="#top" class="nav-link active">Home</a>
+      <a href="#work" class="nav-link">Work</a>
+      <a href="#about" class="nav-link">About</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </nav>
+    <div class="nav-right">
+      <a href="Sarthak_Jain_Resume.pdf" download class="nav-cta">Resume <span>&rarr;</span></a>
+    </div>
+    <button class="menu-toggle" id="menu-toggle" aria-label="Menu"><span></span><span></span></button>
+  </div>
+</header>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <nav class="mobile-nav">
+    <a href="#top" class="mobile-link mm-link">Home</a>
+    <a href="#work" class="mobile-link mm-link">Work</a>
+    <a href="#about" class="mobile-link mm-link">About</a>
+    <a href="#contact" class="mobile-link mm-link">Contact</a>
+    <a href="Sarthak_Jain_Resume.pdf" download class="mobile-link cta mm-link">Resume</a>
+  </nav>
+</div>
+
+<main>
+  <!-- ======== HERO ======== -->
+  <section class="hero" id="top">
+    <div class="hero-badge anim">
+      <span class="badge-dot"></span>
+      <span>Available for Summer 2026</span>
+    </div>
+
+    <h1 class="anim">
+      <span class="line" id="firstName">SARTHAK</span>
+      <span class="line">JAIN<span class="accent-dot"></span></span>
+    </h1>
+
+    <div class="hero-grid">
+      <div class="anim">
+        <p class="hero-desc">ECE + Robotics @ Carnegie Mellon. I build robots, AI systems, embedded platforms, and startup products. From stepper motors to YOLO models, from QNX RTOS to React frontends.</p>
+        <div class="hero-actions">
+          <a href="Sarthak_Jain_Resume.pdf" download class="btn btn-primary"><span>Resume</span><span class="bi">&darr;</span></a>
+          <a href="https://github.com/Sarthak8116" target="_blank" rel="noreferrer" class="btn"><span>GitHub</span><span class="bi">&nearr;</span></a>
+          <a href="https://www.linkedin.com/in/sarthak-jain-72823a1b3/" target="_blank" rel="noreferrer" class="btn"><span>LinkedIn</span><span class="bi">&nearr;</span></a>
+        </div>
+      </div>
+      <div class="hero-card anim">
+        <div class="hc-visual">
+          <div class="hc-core">SJ</div>
+          <span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bbr"></span>
+        </div>
+        <div class="hc-meta"><span>ECE + Robotics</span><span>CMU '28</span></div>
+      </div>
+    </div>
+
+    <div class="marquee anim">
+      <div class="marquee-label">Stack</div>
+      <div class="marquee-wrap">
+        <div class="marquee-track">
+          <span class="marquee-item">Python</span><span class="marquee-item">C / C++</span><span class="marquee-item">ROS2</span><span class="marquee-item">Arduino</span><span class="marquee-item">OpenCV</span><span class="marquee-item">YOLOv8</span><span class="marquee-item">PyTorch</span><span class="marquee-item">SystemVerilog</span><span class="marquee-item">Vivado</span><span class="marquee-item">Altium</span><span class="marquee-item">Fusion 360</span><span class="marquee-item">React</span><span class="marquee-item">Linux</span><span class="marquee-item">MATLAB</span><span class="marquee-item">Flask</span>
+          <span class="marquee-item">Python</span><span class="marquee-item">C / C++</span><span class="marquee-item">ROS2</span><span class="marquee-item">Arduino</span><span class="marquee-item">OpenCV</span><span class="marquee-item">YOLOv8</span><span class="marquee-item">PyTorch</span><span class="marquee-item">SystemVerilog</span><span class="marquee-item">Vivado</span><span class="marquee-item">Altium</span><span class="marquee-item">Fusion 360</span><span class="marquee-item">React</span><span class="marquee-item">Linux</span><span class="marquee-item">MATLAB</span><span class="marquee-item">Flask</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== PROJECTS ======== -->
+  <section class="section" id="work">
+    <div class="s-top">
+      <div class="s-label"><span class="s-idx">01</span><span>Selected Work</span></div>
+      <h2 class="s-title anim">Projects</h2>
+      <p class="s-sub anim">Robotics, computer vision, AI tools, embedded systems, and product design.</p>
+    </div>
+
+    <div class="project-grid anim">
+      <a href="stealth-circuit-showcase.html" class="p-card"><div class="p-num">00</div><h3 class="p-title">AI Circuit Design</h3><p class="p-tag">Stealth Startup</p><div class="p-arrow">&nearr;</div></a>
+      <a href="AI_Air_Hockey_Showcase.html" class="p-card"><div class="p-num">01</div><h3 class="p-title">AI Air Hockey</h3><p class="p-tag">CV + Stepper Motors + Build18</p><div class="p-arrow">&nearr;</div></a>
+      <a href="shadow-fight-showcase_2.html" class="p-card"><div class="p-num">02</div><h3 class="p-title">Shadow Fight</h3><p class="p-tag">QNX RTOS + Dual Pi + Projection</p><div class="p-arrow">&nearr;</div></a>
+      <a href="cadly-showcase.html" class="p-card"><div class="p-num">03</div><h3 class="p-title">CADly</h3><p class="p-tag">Multi-Model AI + DFM Analysis</p><div class="p-arrow">&nearr;</div></a>
+      <a href="FireblightDetectionRobot.html" class="p-card"><div class="p-num">04</div><h3 class="p-title">Fireblight Robot</h3><p class="p-tag">YOLO + ROS2 + Farm-ng</p><div class="p-arrow">&nearr;</div></a>
+      <a href="nostalgiq-showcase.html" class="p-card"><div class="p-num">05</div><h3 class="p-title">NostalgiQ</h3><p class="p-tag">Voice Clone + Face Anim + NLP</p><div class="p-arrow">&nearr;</div></a>
+      <a href="chessmate-showcase_1.html" class="p-card"><div class="p-num">06</div><h3 class="p-title">Chessmate</h3><p class="p-tag">Minimax + Alpha-Beta Pruning</p><div class="p-arrow">&nearr;</div></a>
+      <a href="echolocate-showcase.html" class="p-card"><div class="p-num">07</div><h3 class="p-title">Echolocate</h3><p class="p-tag">Assistive Glove + Biomimicry</p><div class="p-arrow">&nearr;</div></a>
+      <a href="wire-cutter-showcase.html" class="p-card"><div class="p-num">08</div><h3 class="p-title">Wire Cutter &amp; Stripper</h3><p class="p-tag">CAD + Arduino + NEMA Steppers</p><div class="p-arrow">&nearr;</div></a>
+      <a href="red-robot-showcase.html" class="p-card"><div class="p-num">09</div><h3 class="p-title">Red Robot</h3><p class="p-tag">Robotics Competition 2026</p><div class="p-arrow">&nearr;</div></a>
+      <a href="photovore_portfolio_1.html" class="p-card"><div class="p-num">10</div><h3 class="p-title">Photovore</h3><p class="p-tag">Light-Chasing + Custom PCB</p><div class="p-arrow">&nearr;</div></a>
+      <a href="early-robotics-showcase.html" class="p-card"><div class="p-num">11</div><h3 class="p-title">Line Follower + GearSketch</h3><p class="p-tag">PID + Gear Trains + Foundations</p><div class="p-arrow">&nearr;</div></a>
+    </div>
+  </section>
+
+  <!-- ======== ABOUT ======== -->
+  <section class="section section-dark" id="about">
+    <div class="s-top">
+      <div class="s-label"><span class="s-idx">02</span><span>Background</span></div>
+      <h2 class="s-title anim">About</h2>
+    </div>
+
+    <div class="about-cols anim">
+      <div class="about-cell">
+        <h3>Who I Am</h3>
+        <p>I'm a sophomore at Carnegie Mellon studying Electrical &amp; Computer Engineering with an additional major in Robotics. I build things that sit at the intersection of hardware and software: robots that see and act, AI tools that solve real problems, and embedded systems that work under constraints.</p>
+        <p>Currently leading the electrical subteam at IEEExCMU, researching agricultural robotics at Kantor Lab, and building an AI-native circuit design tool in stealth. Previously interned at Fleeca where I designed tooling that improved wiring throughput by 22%, and co-authored a published paper on solar panel efficiency with a Harvard researcher.</p>
+      </div>
+      <div class="about-cell">
+        <h3>Experience</h3>
+        <div class="exp-item">
+          <div class="exp-role">Electrical Lead</div>
+          <div class="exp-org">IEEExCMU — Animatronic Control System</div>
+          <div class="exp-date">Mar 2025 — Present</div>
+        </div>
+        <div class="exp-item">
+          <div class="exp-role">Research Assistant</div>
+          <div class="exp-org">Kantor Lab — Fireblight Detection Robot</div>
+          <div class="exp-date">2025 — Present</div>
+        </div>
+        <div class="exp-item">
+          <div class="exp-role">Engineering Intern</div>
+          <div class="exp-org">Fleeca — Tooling &amp; Wiring Systems</div>
+          <div class="exp-date">Jan 2023 — Jul 2023</div>
+        </div>
+        <div class="exp-item">
+          <div class="exp-role">Research Co-author</div>
+          <div class="exp-org">Photovoltaic Panel Efficiency — Published</div>
+          <div class="exp-date">Jan 2023 — Nov 2024</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== CONTACT ======== -->
+  <section class="section" id="contact">
+    <div class="s-top">
+      <div class="s-label"><span class="s-idx">03</span><span>Get In Touch</span></div>
+      <h2 class="s-title anim">Contact</h2>
+    </div>
+
+    <div class="contact-wrap anim">
+      <div class="contact-cell">
+        <h3>Send a Message</h3>
+        <form id="contact-form">
+          <div class="form-row">
+            <div class="form-group"><label for="c-name">Name</label><input type="text" id="c-name" name="name" required></div>
+            <div class="form-group"><label for="c-email">Email</label><input type="email" id="c-email" name="email" required></div>
+          </div>
+          <div class="form-group"><label for="c-msg">Message</label><textarea id="c-msg" name="message" rows="5" required></textarea></div>
+          <button type="submit" class="btn btn-primary btn-full"><span>Send Message</span><span class="bi">&rarr;</span></button>
+        </form>
+      </div>
+      <div class="contact-cell">
+        <h3>Direct</h3>
+        <div class="contact-links">
+          <a href="/cdn-cgi/l/email-protection#83f0e9e2eaedb7c3e2ede7f1e6f4ade0eef6ade6e7f6"><span class="cl-label">Email</span> <span class="__cf_email__" data-cfemail="bbc8d1dad2d58ffbdad5dfc9decc95d8d6ce95dedfce">[email&#160;protected]</span></a>
+          <a href="tel:+14124278570"><span class="cl-label">Phone</span> +1 (412) 427-8570</a>
+          <a href="https://www.linkedin.com/in/sarthak-jain-72823a1b3/" target="_blank" rel="noreferrer"><span class="cl-label">LinkedIn</span> sarthak-jain</a>
+          <a href="https://github.com/Sarthak8116" target="_blank" rel="noreferrer"><span class="cl-label">GitHub</span> Sarthak8116</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h3>Sarthak Jain</h3>
+      <p>ECE + Robotics @ CMU. Hardware, AI, embedded systems, startup.</p>
+    </div>
+    <div class="footer-col"><h4>Navigate</h4><a href="#work">Projects</a><a href="#about">About</a><a href="#contact">Contact</a></div>
+    <div class="footer-col"><h4>Social</h4><a href="https://www.linkedin.com/in/sarthak-jain-72823a1b3/" target="_blank">LinkedIn</a><a href="https://github.com/Sarthak8116" target="_blank">GitHub</a></div>
+    <div class="footer-col"><h4>Resources</h4><a href="Sarthak_Jain_Resume.pdf" download>Resume</a><a href="skills-showcase.html">Skills</a></div>
+  </div>
+  <div class="footer-bottom">&copy; 2026 Sarthak Jain</div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+(()=>{
+  'use strict';
+  const $=s=>document.querySelector(s);
+  const $$=s=>[...document.querySelectorAll(s)];
+  const body=document.body;
+
+  // Intro
+  const intro=$('#intro');
+  if(intro){setTimeout(()=>{intro.classList.add('done');setTimeout(()=>{intro.style.display='none'},1400)},700);}
+
+  // Cursor
+  const cur=$('#cursor');
+  if(cur&&window.innerWidth>768){
+    let cx=0,cy=0,tx=0,ty=0;
+    document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY;if(!body.classList.contains('cursor-on')){body.classList.add('cursor-on');cx=tx;cy=ty}});
+    const tick=()=>{cx+=(tx-cx)*0.15;cy+=(ty-cy)*0.15;cur.style.transform=`translate(${cx-4}px,${cy-4}px)`;requestAnimationFrame(tick)};
+    requestAnimationFrame(tick);
+  }
+
+  // Nav scroll hide
+  const nav=$('#nav');
+  let lastY=0;
+  window.addEventListener('scroll',()=>{const y=window.scrollY;if(y>80)nav.classList.toggle('hidden',y>lastY);else nav.classList.remove('hidden');lastY=y},{passive:true});
+
+  // Mobile menu
+  const mt=$('#menu-toggle'),mm=$('#mobile-menu');
+  if(mt&&mm){
+    mt.addEventListener('click',()=>{const o=mm.classList.contains('open');mm.classList.toggle('open',!o);mt.classList.toggle('open',!o);body.style.overflow=o?'':'hidden'});
+    $$('.mm-link').forEach(l=>l.addEventListener('click',()=>{mm.classList.remove('open');mt.classList.remove('open');body.style.overflow=''}));
+  }
+
+  // Scroll reveal
+  const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('show');obs.unobserve(x.target)}}),{threshold:0.08,rootMargin:'0px 0px -6% 0px'});
+  $$('.anim').forEach(el=>obs.observe(el));
+
+  // Smooth scroll
+  $$('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}}));
+
+  // Contact form
+  const form=$('#contact-form');
+  if(form)form.addEventListener('submit',e=>{e.preventDefault();const d=new FormData(form);const subj=encodeURIComponent(`Portfolio inquiry from ${d.get('name')||'visitor'}`);const b=encodeURIComponent(`Name: ${d.get('name')}\nEmail: ${d.get('email')}\n\n${d.get('message')}`);window.location.href=`mailto:sjain4@andrew.cmu.edu?subject=${subj}&body=${b}`});
+
+  // Name scramble
+  const el=$('#firstName');
+  if(el){
+    const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\u0905\u0906\u0907\u0915\u0916\u0917\u091C\u0924\u0925\u0926\u0927\u0928\u092A\u092E\u0930\u0932\u0938\u0939';
+    const targets=['SARTHAK','\u0938\u093E\u0930\u094D\u0925\u0915'];
+    let idx=0,running=false;
+    const scramble=async(node,target)=>{const gl=[...target];let f=0;const t=gl.length+8;return new Promise(r=>{const tick=()=>{let s='';for(let i=0;i<gl.length;i++)s+=i<f?gl[i]:chars[Math.random()*chars.length|0];node.textContent=s;f+=0.4;f<
