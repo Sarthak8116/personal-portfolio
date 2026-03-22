@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NostalgiQ | Project Showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0a;--bg-card:#111111;--text:#e8e4de;--text-muted:#8a857e;--accent:#ff3c2e;--accent-glow:rgba(255,60,46,0.15);--border:rgba(255,255,255,0.06);--serif:'Instrument Serif',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--ease:cubic-bezier(0.22,1,0.36,1)}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.5rem 3rem;display:flex;justify-content:space-between;align-items:center;background:rgba(10,10,10,0.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+nav .logo{font-family:var(--mono);font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-muted)}nav .logo span{color:var(--accent)}
+nav .nav-links{display:flex;gap:2rem;list-style:none}nav .nav-links a{font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;transition:color 0.3s}nav .nav-links a:hover{color:var(--text)}
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;position:relative;overflow:hidden}
+.hero-left{display:flex;flex-direction:column;justify-content:flex-end;padding:0 4rem 6rem;z-index:2}
+.hero-right{background:var(--bg-card);display:flex;align-items:center;justify-content:center;border-left:1px solid var(--border);position:relative;overflow:hidden}
+.hero-tag{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.8s var(--ease) 0.3s forwards}
+.hero h1{font-family:var(--serif);font-size:clamp(3rem,7vw,6rem);font-weight:400;line-height:1.05;letter-spacing:-0.02em;margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.8s var(--ease) 0.5s forwards}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero-desc{font-size:1.1rem;color:var(--text-muted);max-width:480px;line-height:1.7;opacity:0;animation:fadeUp 0.8s var(--ease) 0.7s forwards}
+.hero-desc a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,60,46,0.3)}
+#heroCanvas{width:100%;height:100%;display:block}
+section{padding:7rem 3rem}
+.section-label{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;display:flex;align-items:center;gap:1rem}
+.section-label::before{content:'';width:30px;height:1px;background:var(--accent)}
+.section-title{font-family:var(--serif);font-size:clamp(2rem,4vw,3.5rem);font-weight:400;line-height:1.15;margin-bottom:2rem;max-width:700px}
+.section-desc{font-size:0.95rem;color:var(--text-muted);max-width:620px;line-height:1.8}
+.overview{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-top:3rem}
+.stat{background:var(--bg);padding:2.5rem 2rem;text-align:center;transition:background 0.4s}.stat:hover{background:var(--bg-card)}
+.stat-value{font-family:var(--serif);font-size:2.5rem;color:var(--accent);line-height:1;margin-bottom:0.5rem}
+.stat-label{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted)}
+.pipeline-wrap{margin-top:3rem}
+#pipelineCanvas{width:100%;height:400px;display:block;border-radius:4px;border:1px solid var(--border);background:var(--bg-card)}
+.how-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;margin-top:3rem;align-items:start}
+.how-text h3{font-family:var(--serif);font-size:1.8rem;font-weight:400;margin-bottom:1rem}
+.how-text p{font-size:0.9rem;color:var(--text-muted);line-height:1.8;margin-bottom:1.5rem}
+.how-visual{background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:2.5rem}
+.how-step{display:flex;gap:1.2rem;margin-bottom:2rem;align-items:flex-start}
+.how-step:last-child{margin-bottom:0}
+.how-step-num{font-family:var(--serif);font-size:1.5rem;color:var(--accent);flex-shrink:0;width:2rem;text-align:center;line-height:1.2}
+.how-step-content h4{font-family:var(--sans);font-weight:500;font-size:0.9rem;margin-bottom:0.3rem}
+.how-step-content p{font-size:0.8rem;color:var(--text-muted);line-height:1.6}
+.tech-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:3rem}
+.tech-card{background:var(--bg-card);border:1px solid var(--border);padding:2rem;border-radius:4px;transition:border-color 0.3s,transform 0.3s var(--ease)}
+.tech-card:hover{border-color:rgba(255,60,46,0.3);transform:translateY(-2px)}
+.tech-card-icon{width:40px;height:40px;background:var(--accent-glow);border:1px solid rgba(255,60,46,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1.2rem}
+.tech-card h3{font-family:var(--sans);font-weight:500;font-size:1rem;margin-bottom:0.6rem}
+.tech-card p{font-size:0.85rem;color:var(--text-muted);line-height:1.6}
+.tech-tags{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:1rem}
+.tech-tags span{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.08em;padding:0.25rem 0.6rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:2px;color:var(--text-muted)}
+.modules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0;margin-top:3rem;border:1px solid var(--border)}
+.module{padding:2.5rem 2rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border);transition:background 0.3s;position:relative}
+.module:hover{background:var(--accent-glow)}
+.module-num{font-family:var(--serif);font-size:2.5rem;color:var(--accent);opacity:0.15;position:absolute;top:1rem;right:1.2rem}
+.module h3{font-family:var(--sans);font-weight:500;font-size:0.95rem;margin-bottom:0.5rem}
+.module p{font-size:0.8rem;color:var(--text-muted);line-height:1.7}
+.skills-row{display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:2rem}
+.skill-tag{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.05em;padding:0.4rem 1rem;border:1px solid var(--border);border-radius:3px;color:var(--text-muted);transition:all 0.3s var(--ease)}
+.skill-tag:hover{border-color:var(--accent);color:var(--text);background:var(--accent-glow)}
+.cta-section{text-align:center;padding:6rem 3rem;position:relative}
+.cta-section::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:1px;height:60px;background:var(--border)}
+.cta-link{display:inline-flex;align-items:center;gap:0.8rem;font-family:var(--sans);font-weight:500;font-size:1rem;color:var(--text);text-decoration:none;padding:1rem 2.5rem;border:1px solid var(--border);border-radius:4px;transition:all 0.3s var(--ease)}
+.cta-link:hover{background:var(--accent);border-color:var(--accent);color:white}
+.cta-link svg{width:18px;height:18px}
+footer{padding:4rem 3rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+footer .footer-text{font-size:0.8rem;color:var(--text-muted)}footer .footer-text a{color:var(--accent);text-decoration:none}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s var(--ease),transform 0.7s var(--ease)}.reveal.visible{opacity:1;transform:translateY(0)}
+@media(max-width:900px){nav{padding:1rem 1.5rem}nav .nav-links{display:none}.hero{grid-template-columns:1fr;min-height:auto}.hero-left{padding:8rem 1.5rem 3rem}.hero-right{height:50vh;border-left:none;border-top:1px solid var(--border)}section{padding:4rem 1.5rem}.overview{grid-template-columns:repeat(2,1fr)}.how-grid{grid-template-columns:1fr}.modules-grid{grid-template-columns:1fr}#pipelineCanvas{height:300px}footer{flex-direction:column;gap:1rem;text-align:center}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Prakhar Jain <span>//</span> Portfolio</div>
+  <ul class="nav-links">
+    <li><a href="#pipeline">Pipeline</a></li>
+    <li><a href="#modules">Modules</a></li>
+    <li><a href="#tech">Technology</a></li>
+    <li><a href="https://github.com/Adityap2508/NostalgiQ" target="_blank">GitHub</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-tag">AI + Voice Cloning + Face Animation + NLP</p>
+    <h1>Nostalgi<em>Q</em></h1>
+    <p class="hero-desc">An AI memory preservation toolkit that brings old photos to life. Upload a photograph, feed it stories and voice recordings, and NostalgiQ generates a talking, animated version of that person, preserving their likeness, personality, and voice for future generations. <a href="https://github.com/Adityap2508/NostalgiQ" target="_blank">View source &rarr;</a></p>
+  </div>
+  <div class="hero-right">
+    <canvas id="heroCanvas"></canvas>
+  </div>
+</section>
+
+<section>
+  <div class="reveal">
+    <p class="section-label">01 Overview</p>
+    <h2 class="section-title">Preserve memories as living, speaking portraits</h2>
+    <p class="section-desc">NostalgiQ combines face detection, voice cloning, talking head generation, and personality prediction into a single pipeline. Give it a photo and some text or audio, and it produces a video of that person speaking in their own voice with their own mannerisms. Built for families preserving the memory of loved ones.</p>
+  </div>
+  <div class="overview reveal">
+    <div class="stat"><div class="stat-value">6</div><div class="stat-label">AI Models</div></div>
+    <div class="stat"><div class="stat-value">4</div><div class="stat-label">Core Modules</div></div>
+    <div class="stat"><div class="stat-value">3</div><div class="stat-label">Video APIs</div></div>
+    <div class="stat"><div class="stat-value">NLP</div><div class="stat-label">Personality Engine</div></div>
+  </div>
+</section>
+
+<section id="pipeline" style="background:var(--bg-card);">
+  <div class="reveal">
+    <p class="section-label">02 The Pipeline</p>
+    <h2 class="section-title">From photograph to speaking portrait</h2>
+    <p class="section-desc">The system processes inputs through a multi-stage pipeline: face analysis extracts identity and features, text/audio is processed for voice synthesis, and a talking head model animates the face to match the speech.</p>
+  </div>
+  <div class="pipeline-wrap reveal">
+    <canvas id="pipelineCanvas"></canvas>
+  </div>
+</section>
+
+<section id="modules">
+  <div class="reveal">
+    <p class="section-label">03 Core Modules</p>
+    <h2 class="section-title">Four systems working together</h2>
+  </div>
+  <div class="how-grid reveal">
+    <div class="how-text">
+      <h3>Face Analysis Pipeline</h3>
+      <p>Detects faces in photos and videos using InsightFace, DeepFace, and MediaPipe. Clusters identities across multiple images, estimates age, extracts facial landmarks, and generates scene descriptions with CLIP. Object detection via YOLOv8 and text extraction via EasyOCR provide additional context. Outputs cropped faces and a metadata.json with the full analysis.</p>
+      <h3>Talking Video Generation</h3>
+      <p>Three engines available: SadTalker for local, realistic talking head videos from a single image plus audio. HeyGen API for cloud-based generation from a public image URL and text. D-ID API as an alternative cloud option. Each takes a still photograph and produces a video of that person speaking.</p>
+      <h3>Voice and Text Processing</h3>
+      <p>ElevenLabs voice cloning creates a synthetic voice from audio samples. Whisper handles speech-to-text transcription. Gemini generates conversational responses in the style of the person based on their writing samples and personality profile.</p>
+    </div>
+    <div class="how-visual">
+      <div class="how-step"><div class="how-step-num">1</div><div class="how-step-content"><h4>Upload Photo</h4><p>A photograph of the person. The face pipeline detects, crops, and analyzes the face automatically.</p></div></div>
+      <div class="how-step"><div class="how-step-num">2</div><div class="how-step-content"><h4>Provide Voice / Text</h4><p>Audio recordings for voice cloning, or text samples for personality prediction and speech synthesis.</p></div></div>
+      <div class="how-step"><div class="how-step-num">3</div><div class="how-step-content"><h4>Generate Portrait</h4><p>SadTalker, HeyGen, or D-ID animates the face to match the synthesized speech. The result is a video of the person talking.</p></div></div>
+      <div class="how-step"><div class="how-step-num">4</div><div class="how-step-content"><h4>Interact</h4><p>Ask questions and receive responses in the person's voice and personality, powered by Gemini and the NLP personality model.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="tech" style="background:var(--bg-card);">
+  <div class="reveal">
+    <p class="section-label">04 Technology Stack</p>
+    <h2 class="section-title">What powers the system</h2>
+  </div>
+  <div class="tech-grid reveal">
+    <div class="tech-card"><div class="tech-card-icon">&#128065;</div><h3>Face Analysis</h3><p>InsightFace and DeepFace for detection and identity clustering. MediaPipe for landmark extraction. CLIP for scene understanding. YOLOv8 for object detection.</p><div class="tech-tags"><span>InsightFace</span><span>DeepFace</span><span>MediaPipe</span></div></div>
+    <div class="tech-card"><div class="tech-card-icon">&#127908;</div><h3>Voice Cloning</h3><p>ElevenLabs API clones a voice from audio samples. The synthetic voice speaks new text while preserving the original tone, cadence, and character.</p><div class="tech-tags"><span>ElevenLabs</span><span>Voice Synthesis</span></div></div>
+    <div class="tech-card"><div class="tech-card-icon">&#127916;</div><h3>Talking Head Generation</h3><p>SadTalker for local inference, HeyGen and D-ID for cloud-based video generation. Each takes a still image and audio to produce a realistic speaking video.</p><div class="tech-tags"><span>SadTalker</span><span>HeyGen</span><span>D-ID</span></div></div>
+    <div class="tech-card"><div class="tech-card-icon">&#129504;</div><h3>NLP + Personality</h3><p>Transformer-based personality prediction from text samples. Gemini generates responses matching the predicted personality. Whisper transcribes audio to text.</p><div class="tech-tags"><span>Gemini</span><span>Whisper</span><span>Transformers</span></div></div>
+    <div class="tech-card"><div class="tech-card-icon">&#128187;</div><h3>Frontend</h3><p>React/TypeScript interface (App.tsx) for uploading photos, recording audio, and viewing the generated talking portraits. Clean, emotional UI design.</p><div class="tech-tags"><span>React</span><span>TypeScript</span><span>Vite</span></div></div>
+    <div class="tech-card"><div class="tech-card-icon">&#9881;</div><h3>Backend</h3><p>Python Flask backend orchestrating the pipeline. Manages model inference, API calls, file processing, and serves the generated video output.</p><div class="tech-tags"><span>Python</span><span>Flask</span><span>REST API</span></div></div>
+  </div>
+</section>
+
+<section>
+  <div class="reveal">
+    <p class="section-label">05 Skills</p>
+    <h2 class="section-title">What went into building this</h2>
+  </div>
+  <div class="skills-row reveal">
+    <span class="skill-tag">Python</span>
+    <span class="skill-tag">React / TypeScript</span>
+    <span class="skill-tag">Computer Vision</span>
+    <span class="skill-tag">NLP</span>
+    <span class="skill-tag">Voice Cloning</span>
+    <span class="skill-tag">Generative AI</span>
+    <span class="skill-tag">Talking Head Models</span>
+    <span class="skill-tag">Face Detection</span>
+    <span class="skill-tag">API Integration</span>
+    <span class="skill-tag">Flask</span>
+    <span class="skill-tag">Deep Learning</span>
+    <span class="skill-tag">Team Collaboration</span>
+  </div>
+</section>
+
+<div class="cta-section">
+  <a href="https://github.com/Adityap2508/NostalgiQ" target="_blank" class="cta-link">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+    View on GitHub
+  </a>
+</div>
+
+<footer>
+  <div class="footer-text">NostalgiQ &copy; 2026</div>
+  <div class="footer-text"><a href="#">Back to Portfolio &uarr;</a></div>
+</footer>
+
+<script>
+const observer = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('visible'); }), { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// HERO CANVAS - floating memory particles
+(function(){
+  const c=document.getElementById('heroCanvas'),ctx=c.getContext('2d');let W,H;
+  function resize(){const r=window.devicePixelRatio||1,rc=c.getBoundingClientRect();W=rc.width;H=rc.height;c.width=W*r;c.height=H*r;ctx.scale(r,r);}
+  resize();window.addEventListener('resize',resize);
+  const particles=[];
+  for(let i=0;i<40;i++) particles.push({x:Math.random()*1200,y:Math.random()*900,r:Math.random()*3+1,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,a:Math.random()*0.5+0.1,phase:Math.random()*Math.PI*2});
+  let f=0;
+  function draw(){
+    f++;ctx.clearRect(0,0,W,H);
+    // Subtle radial glow
+    const g=ctx.createRadialGradient(W*0.5,H*0.4,0,W*0.5,H*0.4,W*0.5);
+    g.addColorStop(0,'rgba(255,60,46,0.04)');g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    // Particles
+    particles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      const pulse=Math.sin(f*0.02+p.phase)*0.3+0.7;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r*pulse,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,60,46,${p.a*pulse})`;ctx.fill();
+    });
+    // Connection lines
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<120){
+          ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.strokeStyle=`rgba(255,60,46,${0.06*(1-dist/120)})`;ctx.lineWidth=0.5;ctx.stroke();
+        }
+      }
+    }
+    // Center icon - photo frame
+    const cx=W/2,cy=H/2;
+    ctx.save();ctx.strokeStyle='rgba(232,228,222,0.12)';ctx.lineWidth=2;
+    ctx.strokeRect(cx-40,cy-50,80,100);
+    // Face silhouette
+    ctx.beginPath();ctx.arc(cx,cy-15,16,0,Math.PI*2);ctx.strokeStyle='rgba(232,228,222,0.15)';ctx.stroke();
+    ctx.beginPath();ctx.ellipse(cx,cy+25,22,14,0,Math.PI,0,true);ctx.stroke();
+    // Sound waves
+    for(let i=1;i<=3;i++){
+      const waveA=Math.sin(f*0.03+i)*0.4+0.6;
+      ctx.beginPath();ctx.arc(cx+55,cy,10+i*12,-(Math.PI*0.3),Math.PI*0.3);
+      ctx.strokeStyle=`rgba(255,60,46,${0.15*waveA})`;ctx.lineWidth=1.5;ctx.stroke();
+    }
+    ctx.restore();
+    // Label
+    ctx.font='500 10px "JetBrains Mono"';ctx.fillStyle='rgba(255,60,46,0.5)';ctx.textAlign='center';
+    ctx.fillText('PHOTO \u2192 VOICE \u2192 MEMORY',cx,H-30);
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+
+// PIPELINE CANVAS
+(function(){
+  const c=document.getElementById('pipelineCanvas');if(!c)return;const ctx=c.getContext('2d');let W,H;
+  function resize(){const r=window.devicePixelRatio||1,rc=c.getBoundingClientRect();W=rc.width;H=rc.height;c.width=W*r;c.height=H*r;ctx.scale(r,r);}
+  resize();window.addEventListener('resize',resize);
+  const stages=[
+    {label:'UPLOAD',sub:'Photo + Audio',icon:'\u{1F4F7}'},
+    {label:'DETECT',sub:'Face Analysis',icon:'\u{1F50D}'},
+    {label:'CLONE',sub:'Voice Synthesis',icon:'\u{1F3A4}'},
+    {label:'ANIMATE',sub:'Talking Head',icon:'\u{1F3AC}'},
+    {label:'INTERACT',sub:'Personality AI',icon:'\u{1F4AC}'}
+  ];
+  let f=0,activeStage=0;
+  function draw(){
+    f++;ctx.clearRect(0,0,W,H);
+    if(f%90===0) activeStage=(activeStage+1)%stages.length;
+    const pad=60,stageW=(W-pad*2)/stages.length;
+    const cy=H/2;
+    stages.forEach((s,i)=>{
+      const cx=pad+stageW*i+stageW/2;
+      const isActive=i===activeStage;
+      const r=isActive?36:28;
+      // Glow
+      if(isActive){ctx.save();ctx.fillStyle='rgba(255,60,46,0.06)';ctx.beginPath();ctx.arc(cx,cy,r+16,0,Math.PI*2);ctx.fill();ctx.restore();}
+      // Circle
+      ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
+      ctx.fillStyle=isActive?'#ff3c2e':'#1a1a1a';
+      ctx.strokeStyle=isActive?'#ff3c2e':'rgba(255,255,255,0.1)';
+      ctx.lineWidth=isActive?2:1;ctx.fill();ctx.stroke();
+      // Icon
+      ctx.font=`${isActive?'18':'14'}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillStyle=isActive?'#fff':'#8a857e';ctx.fillText(s.icon,cx,cy-1);
+      // Labels
+      ctx.font=`${isActive?'600':'500'} ${isActive?'10':'9'}px "DM Sans"`;
+      ctx.fillStyle=isActive?'#e8e4de':'#8a857e';ctx.textAlign='center';
+      ctx.fillText(s.label,cx,cy+r+18);
+      ctx.font='300 8px "JetBrains Mono"';ctx.fillStyle=isActive?'#ff3c2e':'rgba(255,255,255,0.25)';
+      ctx.fillText(s.sub,cx,cy+r+32);
+      // Arrow to next
+      if(i<stages.length-1){
+        const nx=pad+stageW*(i+1)+stageW/2;
+        const isActiveEdge=i===activeStage||i+1===activeStage;
+        ctx.save();ctx.strokeStyle=isActiveEdge?'rgba(255,60,46,0.4)':'rgba(255,255,255,0.06)';
+        ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(cx+r+4,cy);ctx.lineTo(nx-r-4,cy);ctx.stroke();
+        const a=0;ctx.fillStyle=ctx.strokeStyle;ctx.beginPath();
+        const ax=nx-r-4;ctx.moveTo(ax,cy);ctx.lineTo(ax-7,cy-4);ctx.lineTo(ax-7,cy+4);ctx.fill();
+        ctx.restore();
+      }
+    });
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>
