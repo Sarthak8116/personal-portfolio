@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health-Tracking Vest | Sarthak Jain</title>
+<meta name="description" content="An edge-AI wearable that fuses biosignals on-device and ships real-time health insight to blind football players.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0a;--bg-card:#111111;--text:#e8e4de;--text-muted:#8a857e;--accent:#ff3c2e;--accent-glow:rgba(255,60,46,0.15);--border:rgba(255,255,255,0.06);--serif:'Instrument Serif',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--ease:cubic-bezier(0.22,1,0.36,1)}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.5rem 3rem;display:flex;justify-content:space-between;align-items:center;background:rgba(10,10,10,0.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+nav .logo{font-family:var(--mono);font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-muted);text-decoration:none}nav .logo span{color:var(--accent)}
+nav .nav-links{display:flex;gap:2rem;list-style:none}nav .nav-links a{font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;transition:color 0.3s}nav .nav-links a:hover{color:var(--text)}
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-direction:column;text-align:center;padding:0 3rem}
+#heroCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:0.9}
+.hero-content{position:relative;z-index:2;max-width:760px}
+.hero-tag{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.45em;text-transform:uppercase;color:var(--accent);margin-bottom:2rem;display:inline-flex;align-items:center;gap:0.8rem;padding:0.5rem 1.2rem;border:1px solid rgba(255,60,46,0.25);border-radius:3px;background:rgba(255,60,46,0.04)}
+.hero-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease infinite}
+.hero h1{font-family:var(--serif);font-size:clamp(2.8rem,7vw,6rem);font-weight:400;line-height:1.02;letter-spacing:-0.03em;margin-bottom:1.5rem}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero-sub{font-family:var(--serif);font-size:clamp(1.2rem,2.5vw,1.7rem);font-weight:400;color:var(--text-muted);margin-bottom:2rem;font-style:italic}
+.hero-desc{font-size:1rem;color:var(--text-muted);max-width:560px;margin:0 auto;line-height:1.8}
+.hero-meta{margin-top:3rem;display:flex;gap:2.5rem;justify-content:center;flex-wrap:wrap}
+.hero-meta div{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)}
+.hero-meta div span{display:block;color:var(--accent);font-size:0.9rem;margin-bottom:0.3rem;letter-spacing:0.05em}
+section{padding:7rem 3rem;max-width:1100px;margin:0 auto}
+.section-label{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;display:flex;align-items:center;gap:1rem}
+.section-label::before{content:'';width:30px;height:1px;background:var(--accent)}
+.section-title{font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);font-weight:400;line-height:1.15;margin-bottom:1.6rem;max-width:760px}
+.section-desc{font-size:0.98rem;color:var(--text-muted);max-width:680px;line-height:1.85}
+.section-desc b{color:var(--text);font-weight:500}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:3rem}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:2.4rem;position:relative;overflow:hidden;transition:border-color 0.3s}
+.card:hover{border-color:rgba(255,60,46,0.22)}
+.card .v-num{font-family:var(--serif);font-size:4rem;color:var(--accent);opacity:0.08;position:absolute;top:0.4rem;right:1.4rem;line-height:1}
+.card h3{font-family:var(--sans);font-weight:500;font-size:1.05rem;margin-bottom:0.8rem}
+.card p{font-size:0.88rem;color:var(--text-muted);line-height:1.75}
+.figure{margin-top:3rem;border:1px solid var(--border);border-radius:4px;background:var(--bg-card);overflow:hidden}
+.figure canvas{width:100%;display:block}
+.figure .cap{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);padding:1rem 1.5rem;border-top:1px solid var(--border)}
+.figure .cap span{color:var(--accent)}
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-top:3rem}
+.stat-strip .stat{background:var(--bg-card);padding:2rem 1.5rem}
+.stat .num{font-family:var(--serif);font-size:2.6rem;color:var(--accent);line-height:1}
+.stat .lab{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-top:0.8rem;line-height:1.5}
+.skills-row{display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:2rem}
+.skill-tag{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.05em;padding:0.4rem 1rem;border:1px solid var(--border);border-radius:3px;color:var(--text-muted);transition:all 0.3s var(--ease)}
+.skill-tag:hover{border-color:var(--accent);color:var(--text);background:var(--accent-glow)}
+footer{padding:4rem 3rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto}
+footer .footer-text{font-size:0.8rem;color:var(--text-muted)}footer .footer-text a{color:var(--accent);text-decoration:none}
+@keyframes pulse{0%,100%{opacity:0.4;transform:scale(0.8)}50%{opacity:1;transform:scale(1.2)}}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s var(--ease),transform 0.7s var(--ease)}.reveal.visible{opacity:1;transform:translateY(0)}
+@media(max-width:900px){nav{padding:1rem 1.5rem}nav .nav-links{display:none}section{padding:4rem 1.5rem}.grid-2{grid-template-columns:1fr}.stat-strip{grid-template-columns:1fr 1fr}footer{flex-direction:column;gap:1rem;text-align:center}.hero-meta{gap:1.5rem}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Sarthak Jain <span>//</span> Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="index.html">&larr; Back</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-tag">Edge AI &middot; Wearable Biosignals</div>
+    <h1>A vest that <em>thinks</em> on the athlete</h1>
+    <p class="hero-sub">On-device health tracking for blind football players</p>
+    <p class="hero-desc">A skin-tight sensor bib fuses seven biosignals and runs the models on-body, so athletes who can't self-monitor get real-time health insight with no phone and no cloud.</p>
+    <div class="hero-meta">
+      <div><span>7</span> fused signals</div>
+      <div><span>&lt; 8 ms</span> on-device inference</div>
+      <div><span>500+</span> athletes reached</div>
+    </div>
+  </div>
+</section>
+
+<section id="overview">
+  <div class="reveal">
+    <p class="section-label">Overview</p>
+    <h2 class="section-title">Real-time health, sensed on the body</h2>
+    <p class="section-desc">A wearable for blind football players, where knowing an athlete's true physiological state matters more because they can't rely on visual cues. The vest fuses HR, SpO2, HRV, skin temperature, and IMU activity on-device, cleans the noise off a moving body, and runs a tiny quantized model in real time. Built with a national organization to mass-produce and distribute it.</p>
+  </div>
+
+  <div class="figure reveal">
+    <canvas id="fuseCanvas" height="300"></canvas>
+    <div class="cap"><span>Fig 1</span> &mdash; Seven raw biosignal streams fuse into one clean health readout on-device.</div>
+  </div>
+
+  <div class="grid-2 reveal" style="margin-top:2rem">
+    <div class="card"><span class="v-num">01</span><h3>Sensor fusion</h3><p>Seven channels (HR, SpO2, HRV, skin temp, IMU) fused in real time into one physiological picture.</p></div>
+    <div class="card"><span class="v-num">02</span><h3>Artifact rejection</h3><p>A denoising autoencoder plus adaptive Kalman filter cut motion artifact 43% on a sprinting, colliding athlete.</p></div>
+    <div class="card"><span class="v-num">03</span><h3>TinyML on-device</h3><p>A pruned, INT8-quantized model runs in under 8ms on a microcontroller, under a milliwatt budget, no cloud.</p></div>
+    <div class="card"><span class="v-num">04</span><h3>Built to ship</h3><p>Partnered with a national organization to mass-produce and distribute to 500+ blind football players.</p></div>
+  </div>
+
+  <div class="figure reveal" style="margin-top:2rem">
+    <canvas id="denoiseCanvas" height="300"></canvas>
+    <div class="cap"><span>Fig 2</span> &mdash; Motion artifact rejection. <span style="color:var(--text-muted)">Grey:</span> raw signal on a moving body. <span style="color:var(--accent)">Red:</span> cleaned output.</div>
+  </div>
+
+  <div class="stat-strip reveal">
+    <div class="stat"><div class="num">7</div><div class="lab">Fused biosignal channels</div></div>
+    <div class="stat"><div class="num">43%</div><div class="lab">Motion artifact reduced</div></div>
+    <div class="stat"><div class="num">&lt;8ms</div><div class="lab">On-device inference</div></div>
+    <div class="stat"><div class="num">500+</div><div class="lab">Athletes reached</div></div>
+  </div>
+
+  <div class="skills-row reveal" style="margin-top:2.5rem">
+    <span class="skill-tag">Edge AI</span>
+    <span class="skill-tag">TinyML</span>
+    <span class="skill-tag">Sensor Fusion</span>
+    <span class="skill-tag">Model Quantization</span>
+    <span class="skill-tag">Kalman Filtering</span>
+    <span class="skill-tag">Embedded Systems</span>
+    <span class="skill-tag">Signal Processing</span>
+    <span class="skill-tag">On-Device Inference</span>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-text">Edge-AI Wearable &copy; 2026</div>
+  <div class="footer-text"><a href="index.html">Back to Portfolio &uarr;</a></div>
+</footer>
+
+<script>
+const observer=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')}),{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+function fit(c){const r=window.devicePixelRatio||1,rc=c.getBoundingClientRect();c.width=rc.width*r;c.height=rc.height*r;const ctx=c.getContext('2d');ctx.setTransform(r,0,0,r,0,0);return{ctx,W:rc.width,H:rc.height};}
+
+// HERO — pulsing vitals waveform grid
+(function(){
+  const c=document.getElementById('heroCanvas');let S=fit(c),ctx=S.ctx,W=S.W,H=S.H;
+  window.addEventListener('resize',()=>{S=fit(c);ctx=S.ctx;W=S.W;H=S.H;});
+  let f=0;const lanes=6;
+  function draw(){
+    f++;ctx.clearRect(0,0,W,H);
+    for(let L=0;L<lanes;L++){
+      const y0=H*(L+0.5)/lanes;ctx.beginPath();
+      for(let x=0;x<W;x+=2){
+        const beat=Math.sin((x*0.02+f*0.05+L));
+        let v=Math.sin((x+f*1.2)*0.03+L)*5;
+        // ECG-ish spike per lane
+        const ph=((x+f*1.5+L*80)%260)/260;
+        if(ph>0.45&&ph<0.5) v-=22*(1-Math.abs(ph-0.475)/0.025);
+        if(x===0)ctx.moveTo(x,y0+v);else ctx.lineTo(x,y0+v);
+      }
+      ctx.strokeStyle='rgba(255,60,46,0.06)';ctx.lineWidth=1;ctx.stroke();
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// FIG 1 — 7 streams merging into one line
+(function(){
+  const c=document.getElementById('fuseCanvas');if(!c)return;let S=fit(c),ctx=S.ctx,W=S.W,H=S.H;
+  window.addEventListener('resize',()=>{S=fit(c);ctx=S.ctx;W=S.W;H=S.H;});
+  const labels=['HR','SpO2','HRV','TEMP','ACCx','ACCy','ACCz'];let f=0;
+  function draw(){
+    f++;ctx.clearRect(0,0,W,H);const m=70,midX=W*0.6,outX=W-m;
+    ctx.font='400 9px "JetBrains Mono"';ctx.textBaseline='middle';
+    for(let i=0;i<7;i++){
+      const y=H*(i+0.7)/8;
+      ctx.textAlign='right';ctx.fillStyle='rgba(232,228,222,0.4)';ctx.fillText(labels[i],m-8,y);
+      ctx.beginPath();
+      for(let x=m;x<midX;x+=2){const v=Math.sin((x+f*1.3+i*40)*0.06+i)*4;if(x===m)ctx.moveTo(x,y+v);else ctx.lineTo(x,y+v);}
+      // converge line to hub
+      ctx.lineTo(midX+20,H/2);
+      ctx.strokeStyle='rgba(255,255,255,0.10)';ctx.lineWidth=1;ctx.stroke();
+    }
+    // hub
+    ctx.beginPath();ctx.arc(midX+20,H/2,7,0,Math.PI*2);ctx.fillStyle='rgba(255,60,46,0.5)';ctx.fill();
+    // output clean line
+    ctx.beginPath();
+    for(let x=midX+27;x<outX;x+=2){const v=Math.sin((x+f*1.6)*0.05)*10;if(x===midX+27)ctx.moveTo(x,H/2+v);else ctx.lineTo(x,H/2+v);}
+    ctx.strokeStyle='rgba(255,60,46,0.8)';ctx.lineWidth=1.8;ctx.stroke();
+    ctx.textAlign='left';ctx.fillStyle='rgba(255,60,46,0.6)';ctx.fillText('FUSED OUTPUT',midX+30,H/2-18);
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// FIG 2 — noisy raw vs clean denoised
+(function(){
+  const c=document.getElementById('denoiseCanvas');if(!c)return;let S=fit(c),ctx=S.ctx,W=S.W,H=S.H;
+  window.addEventListener('resize',()=>{S=fit(c);ctx=S.ctx;W=S.W;H=S.H;});
+  let f=0;
+  function draw(){
+    f++;ctx.clearRect(0,0,W,H);const m=54,cy=H/2;
+    function base(x){return Math.sin((x+f*1.4)*0.03)*22+Math.sin((x+f*1.4)*0.011)*10;}
+    // raw with noise
+    ctx.beginPath();for(let x=m;x<W-m;x+=1){const n=(Math.random()-0.5)*18+Math.sin(x*0.7+f)*6;const y=cy+base(x)+n;if(x===m)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
+    ctx.strokeStyle='rgba(180,180,175,0.25)';ctx.lineWidth=1;ctx.stroke();
+    // clean
+    ctx.beginPath();for(let x=m;x<W-m;x+=2){const y=cy+base(x);if(x===m)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
+    ctx.strokeStyle='rgba(255,60,46,0.85)';ctx.lineWidth=1.8;ctx.stroke();
+    ctx.font='400 9px "JetBrains Mono"';ctx.textAlign='left';
+    ctx.fillStyle='rgba(180,180,175,0.5)';ctx.fillRect(m,24,10,10);ctx.fillText('RAW',m+16,30);
+    ctx.fillStyle='rgba(255,60,46,0.85)';ctx.fillRect(m+70,24,10,10);ctx.fillText('DENOISED',m+86,30);
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EEG Trigger Synchronization | Sarthak Jain</title>
+<meta name="description" content="Trigger synchronization for a transnasal deep-brain BCI at CMU's ForAll Lab — clock-drift correction, marker clustering, and validation for clean neural data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0a;--bg-card:#111111;--text:#e8e4de;--text-muted:#8a857e;--accent:#ff3c2e;--accent-glow:rgba(255,60,46,0.15);--border:rgba(255,255,255,0.06);--serif:'Instrument Serif',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--ease:cubic-bezier(0.22,1,0.36,1)}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.5rem 3rem;display:flex;justify-content:space-between;align-items:center;background:rgba(10,10,10,0.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+nav .logo{font-family:var(--mono);font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-muted);text-decoration:none}nav .logo span{color:var(--accent)}
+nav .nav-links{display:flex;gap:2rem;list-style:none}nav .nav-links a{font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;transition:color 0.3s}nav .nav-links a:hover{color:var(--text)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-direction:column;text-align:center;padding:0 3rem}
+#heroCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:0.9}
+.hero-content{position:relative;z-index:2;max-width:760px}
+.hero-tag{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.45em;text-transform:uppercase;color:var(--accent);margin-bottom:2rem;opacity:0;animation:fadeUp 0.8s var(--ease) 0.2s forwards;display:inline-flex;align-items:center;gap:0.8rem;padding:0.5rem 1.2rem;border:1px solid rgba(255,60,46,0.25);border-radius:3px;background:rgba(255,60,46,0.04)}
+.hero-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease infinite}
+.hero h1{font-family:var(--serif);font-size:clamp(2.8rem,7vw,6rem);font-weight:400;line-height:1.02;letter-spacing:-0.03em;margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.8s var(--ease) 0.4s forwards}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero-sub{font-family:var(--serif);font-size:clamp(1.2rem,2.5vw,1.7rem);font-weight:400;color:var(--text-muted);margin-bottom:2rem;opacity:0;animation:fadeUp 0.8s var(--ease) 0.6s forwards;font-style:italic}
+.hero-desc{font-size:1rem;color:var(--text-muted);max-width:560px;margin:0 auto;line-height:1.8;opacity:0;animation:fadeUp 0.8s var(--ease) 0.8s forwards}
+.hero-meta{margin-top:3rem;display:flex;gap:2.5rem;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp 0.8s var(--ease) 1s forwards}
+.hero-meta div{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)}
+.hero-meta div span{display:block;color:var(--accent);font-size:0.9rem;margin-bottom:0.3rem;letter-spacing:0.05em}
+
+section{padding:7rem 3rem;max-width:1100px;margin:0 auto}
+.section-label{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;display:flex;align-items:center;gap:1rem}
+.section-label::before{content:'';width:30px;height:1px;background:var(--accent)}
+.section-title{font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);font-weight:400;line-height:1.15;margin-bottom:1.6rem;max-width:760px}
+.section-desc{font-size:0.98rem;color:var(--text-muted);max-width:680px;line-height:1.85}
+.section-desc + .section-desc{margin-top:1.2rem}
+.section-desc b{color:var(--text);font-weight:500}
+.section-desc code{font-family:var(--mono);font-size:0.85em;color:var(--accent);background:rgba(255,60,46,0.06);padding:0.1rem 0.4rem;border-radius:3px}
+
+/* STAT STRIP */
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-top:3rem}
+.stat-strip .stat{background:var(--bg-card);padding:2rem 1.5rem}
+.stat .num{font-family:var(--serif);font-size:2.6rem;color:var(--accent);line-height:1}
+.stat .lab{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-top:0.8rem;line-height:1.5}
+
+/* CARDS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:3rem}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:2.4rem;position:relative;overflow:hidden;transition:border-color 0.3s}
+.card:hover{border-color:rgba(255,60,46,0.22)}
+.card .v-num{font-family:var(--serif);font-size:4rem;color:var(--accent);opacity:0.08;position:absolute;top:0.4rem;right:1.4rem;line-height:1}
+.card h3{font-family:var(--sans);font-weight:500;font-size:1.05rem;margin-bottom:0.8rem}
+.card p{font-size:0.88rem;color:var(--text-muted);line-height:1.75}
+
+/* CANVAS FIGURES */
+.figure{margin-top:3rem;border:1px solid var(--border);border-radius:4px;background:var(--bg-card);overflow:hidden}
+.figure canvas{width:100%;display:block}
+.figure .cap{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);padding:1rem 1.5rem;border-top:1px solid var(--border)}
+.figure .cap span{color:var(--accent)}
+
+/* PIPELINE */
+.pipe{display:flex;flex-wrap:wrap;gap:0.6rem;align-items:center;margin-top:3rem}
+.pipe .step{font-family:var(--mono);font-size:0.72rem;padding:0.7rem 1.1rem;border:1px solid var(--border);border-radius:3px;color:var(--text);background:var(--bg-card)}
+.pipe .step b{color:var(--accent);font-weight:500}
+.pipe .arr{color:var(--accent);font-family:var(--serif);font-size:1.2rem}
+
+.skills-row{display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:2rem}
+.skill-tag{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.05em;padding:0.4rem 1rem;border:1px solid var(--border);border-radius:3px;color:var(--text-muted);transition:all 0.3s var(--ease)}
+.skill-tag:hover{border-color:var(--accent);color:var(--text);background:var(--accent-glow)}
+
+footer{padding:4rem 3rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto}
+footer .footer-text{font-size:0.8rem;color:var(--text-muted)}footer .footer-text a{color:var(--accent);text-decoration:none}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:0.4;transform:scale(0.8)}50%{opacity:1;transform:scale(1.2)}}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s var(--ease),transform 0.7s var(--ease)}.reveal.visible{opacity:1;transform:translateY(0)}
+@media(max-width:900px){nav{padding:1rem 1.5rem}nav .nav-links{display:none}section{padding:4rem 1.5rem}.grid-2{grid-template-columns:1fr}.stat-strip{grid-template-columns:1fr 1fr}footer{flex-direction:column;gap:1rem;text-align:center}.hero-meta{gap:1.5rem}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Sarthak Jain <span>//</span> Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="index.html">&larr; Back</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-tag">Computational Neuroscience</div>
+    <h1>Teaching two clocks to <em>agree</em></h1>
+    <p class="hero-sub">Trigger synchronization for a transnasal deep-brain BCI &middot; ForAll Lab, CMU</p>
+    <p class="hero-desc">A behavioral task and a brain-recording system kept separate clocks. I aligned them to the millisecond so each neural signal maps to the right event.</p>
+    <div class="hero-meta">
+      <div><span>&lt; 2 ms</span> alignment error</div>
+      <div><span>~0.4 ms/min</span> drift, corrected</div>
+      <div><span>100%</span> markers recovered</div>
+    </div>
+  </div>
+</section>
+
+<section id="overview">
+  <div class="reveal">
+    <p class="section-label">Overview</p>
+    <h2 class="section-title">One clock, aligned to the brain</h2>
+    <p class="section-desc">At CMU's <b>ForAll Lab</b>, on a transnasal deep-brain BCI targeting epilepsy and ADHD. Event-related analysis slices the recording around each event and averages, so a few milliseconds of error cancels the signal instead of finding it. The task PC and the neural recorder never shared a clock, and the gap grew over the session.</p>
+  </div>
+
+  <div class="figure reveal">
+    <canvas id="timelineCanvas" height="300"></canvas>
+    <div class="cap"><span>Fig 1</span> &mdash; Task events (top) vs raw EEG markers (bottom). The widening offset is uncorrected clock drift.</div>
+  </div>
+
+  <div class="grid-2 reveal" style="margin-top:2rem">
+    <div class="card"><span class="v-num">01</span><h3>Parse</h3><p>Python parsers merge task event logs and neural trigger codes into one timestamped table.</p></div>
+    <div class="card"><span class="v-num">02</span><h3>Cluster</h3><p>Collapse trigger bursts from noise and switch bounce to one true onset.</p></div>
+    <div class="card"><span class="v-num">03</span><h3>Fit drift</h3><p>Fit a line through the per-event offsets; the slope is the drift, and it remaps every sample into a shared time.</p></div>
+    <div class="card"><span class="v-num">04</span><h3>Validate</h3><p>Automated checks flag dropped triggers and out-of-tolerance residuals; failing sessions get quarantined.</p></div>
+  </div>
+
+  <div class="figure reveal" style="margin-top:2rem">
+    <canvas id="histCanvas" height="300"></canvas>
+    <div class="cap"><span>Fig 2</span> &mdash; Alignment error. <span style="color:var(--text-muted)">Grey:</span> raw offsets. <span style="color:var(--accent)">Red:</span> after correction, tight and centered near zero.</div>
+  </div>
+
+  <div class="stat-strip reveal">
+    <div class="stat"><div class="num">&lt;2ms</div><div class="lab">Final alignment error</div></div>
+    <div class="stat"><div class="num">~30&times;</div><div class="lab">Reduction in timing spread</div></div>
+    <div class="stat"><div class="num">0</div><div class="lab">Mismatched triggers, validated sets</div></div>
+    <div class="stat"><div class="num">100%</div><div class="lab">Marker recovery after declustering</div></div>
+  </div>
+
+  <div class="skills-row reveal" style="margin-top:2.5rem">
+    <span class="skill-tag">Python</span>
+    <span class="skill-tag">NumPy / SciPy</span>
+    <span class="skill-tag">Time-Series Alignment</span>
+    <span class="skill-tag">Signal Processing</span>
+    <span class="skill-tag">Clock-Drift Correction</span>
+    <span class="skill-tag">Marker Clustering</span>
+    <span class="skill-tag">Data Validation</span>
+    <span class="skill-tag">Serial Communication</span>
+    <span class="skill-tag">Deep-Brain BCI</span>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-text">Computational Neuroscience &middot; EEG Synchronization &copy; 2026</div>
+  <div class="footer-text"><a href="index.html">Back to Portfolio &uarr;</a></div>
+</footer>
+
+<script>
+const observer=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')}),{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+function fit(c){const r=window.devicePixelRatio||1,rc=c.getBoundingClientRect();c.width=rc.width*r;c.height=rc.height*r;const ctx=c.getContext('2d');ctx.setTransform(r,0,0,r,0,0);return{ctx,W:rc.width,H:rc.height};}
+
+// HERO — scrolling EEG traces with trigger markers
+(function(){
+  const c=document.getElementById('heroCanvas');let S=fit(c),ctx=S.ctx,W=S.W,H=S.H;
+  window.addEventListener('resize',()=>{S=fit(c);ctx=S.ctx;W=S.W;H=S.H;});
+  const lanes=5;let f=0;
+  const seeds=Array.from({length:lanes},()=>Array.from({length:6},()=>({a:Math.random()*8+4,k:Math.random()*0.05+0.02,p:Math.random()*6})));
+  function draw(){
+    f++;ctx.clearRect(0,0,W,H);
+    for(let L=0;L<lanes;L++){
+      const y0=H*(L+0.5)/lanes;
+      ctx.beginPath();
+      for(let x=0;x<W;x+=2){
+        let v=0;seeds[L].forEach(s=>{v+=s.a*Math.sin((x+f*1.4)*s.k+s.p);});
+        v+=Math.sin((x*0.6+f*2.1+L))*2;
+        if(x===0)ctx.moveTo(x,y0+v);else ctx.lineTo(x,y0+v);
+      }
+      ctx.strokeStyle='rgba(255,255,255,0.05)';ctx.lineWidth=1;ctx.stroke();
+    }
+    // trigger markers drifting across
+    for(let m=0;m<6;m++){
+      const x=((f*0.8+m*W/6)%(W+80))-40;
+      ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);
+      ctx.strokeStyle='rgba(255,60,46,0.10)';ctx.lineWidth=1;ctx.stroke();
+      ctx.beginPath();ctx.arc(x,H*0.5,2.5,0,Math.PI*2);ctx.fillStyle='rgba(255,60,46,0.5)';ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// FIG 1 — task events vs EEG markers, drifting apart
+(function(){
+  const c=document.getElementById('timelineCanvas');if(!c)return;
+  let S=fit(c),ctx=S.ctx,W=S.W,H=S.H;
+  window.addEventListener('resize',()=>{S=fit(c);ctx=S.ctx;W=S.W;H=S.H;});
+  const N=9;let f=0;
+  function draw(){
+    f++;ctx.clearRect(0,0,W,H);
+    const m=60,topY=H*0.34,botY=H*0.70,trackL=m,trackR=W-m;
+    ctx.font='400 10px "JetBrains Mono"';ctx.textBaseline='middle';
+    ctx.fillStyle='rgba(232,228,222,0.45)';ctx.textAlign='left';
+    ctx.fillText('TASK EVENTS',trackL,topY-34);
+    ctx.fillText('EEG MARKERS',trackL,botY+34);
+    // tracks
+    [topY,botY].forEach(y=>{ctx.beginPath();ctx.moveTo(trackL,y);ctx.lineTo(trackR,y);ctx.strokeStyle='rgba(255,255,255,0.10)';ctx.lineWidth=1;ctx.stroke();});
+    for(let i=0;i<N;i++){
+      const tx=trackL+(trackR-trackL)*i/(N-1);
+      const drift=(i/(N-1))*46;            // growing offset
+      const bx=tx+drift;
+      // task tick
+      ctx.beginPath();ctx.moveTo(tx,topY-9);ctx.lineTo(tx,topY+9);ctx.strokeStyle='rgba(232,228,222,0.5)';ctx.lineWidth=1.5;ctx.stroke();
+      ctx.beginPath();ctx.arc(tx,topY,3,0,Math.PI*2);ctx.fillStyle='rgba(232,228,222,0.7)';ctx.fill();
+      // eeg marker
+      ctx.beginPath();ctx.moveTo(bx,botY-9);ctx.lineTo(bx,botY+9);ctx.strokeStyle='rgba(255,60,46,0.7)';ctx.lineWidth=1.5;ctx.stroke();
+      ctx.beginPath();ctx.arc(bx,botY,3,0,Math.PI*2);ctx.fillStyle='var(--accent)';ctx.fillStyle='rgba(255,60,46,0.9)';ctx.fill();
+      // connector showing the gap
+      ctx.beginPath();ctx.moveTo(tx,topY+9);ctx.lineTo(bx,botY-9);
+      ctx.strokeStyle=`rgba(255,60,46,${0.10+0.30*(i/(N-1))})`;ctx.lineWidth=1;ctx.stroke();
+    }
+    // travelling pulse on task track
+    const px=trackL+((f*1.6)%(trackR-trackL));
+    ctx.beginPath();ctx.arc(px,topY,4,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.85)';ctx.fill();
+    ctx.font='400 9px "JetBrains Mono"';ctx.fillStyle='rgba(255,60,46,0.6)';ctx.textAlign='right';
+    ctx.fillText('drift → '+'Δt grows',trackR,botY+34);
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// FIG 2 — error distribution before/after
+(function(){
+  const c=document.getElementById('histCanvas');if(!c)return;
+  let S=fit(c),ctx=S.ctx,W=S.W,H=S.H;
+  window.addEventListener('resize',()=>{S=fit(c);ctx=S.ctx;W=S.W;H=S.H;});
+  const bins=41;
+  function gauss(x,mu,sig){return Math.exp(-0.5*((x-mu)/sig)**2);}
+  let prog=0;
+  function draw(){
+    prog=Math.min(1,prog+0.012);ctx.clearRect(0,0,W,H);
+    const m=54,baseY=H-44,plotW=W-2*m,plotH=H-86;
+    // axis
+    ctx.beginPath();ctx.moveTo(m,baseY);ctx.lineTo(W-m,baseY);ctx.strokeStyle='rgba(255,255,255,0.12)';ctx.lineWidth=1;ctx.stroke();
+    const cx=m+plotW/2;
+    ctx.beginPath();ctx.moveTo(cx,baseY);ctx.lineTo(cx,baseY-plotH);ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.setLineDash([3,4]);ctx.stroke();ctx.setLineDash([]);
+    ctx.font='400 9px "JetBrains Mono"';ctx.fillStyle='rgba(232,228,222,0.4)';ctx.textAlign='center';
+    ctx.fillText('-40ms',m,baseY+16);ctx.fillText('0',cx,baseY+16);ctx.fillText('+40ms',W-m,baseY+16);
+    ctx.fillText('ALIGNMENT ERROR',cx,baseY+30);
+    const bw=plotW/bins;
+    // raw: wide, biased right
+    for(let i=0;i<bins;i++){const t=(i/(bins-1)-0.5)*2;const h=gauss(t,0.32,0.34)*plotH*0.78*prog;const x=m+i*bw;
+      ctx.fillStyle='rgba(180,180,175,0.16)';ctx.fillRect(x+1,baseY-h,bw-2,h);
+      ctx.strokeStyle='rgba(180,180,175,0.28)';ctx.lineWidth=0.6;ctx.strokeRect(x+1,baseY-h,bw-2,h);}
+    // corrected: tight, centered
+    for(let i=0;i<bins;i++){const t=(i/(bins-1)-0.5)*2;const h=gauss(t,0.0,0.07)*plotH*0.95*prog;const x=m+i*bw;
+      ctx.fillStyle='rgba(255,60,46,0.22)';ctx.fillRect(x+1,baseY-h,bw-2,h);
+      ctx.strokeStyle='rgba(255,60,46,0.7)';ctx.lineWidth=0.8;ctx.strokeRect(x+1,baseY-h,bw-2,h);}
+    // legend
+    ctx.textAlign='left';ctx.font='400 9px "JetBrains Mono"';
+    ctx.fillStyle='rgba(180,180,175,0.5)';ctx.fillRect(m,30,10,10);ctx.fillText('RAW OFFSET',m+16,36);
+    ctx.fillStyle='rgba(255,60,46,0.7)';ctx.fillRect(m+130,30,10,10);ctx.fillText('CORRECTED',m+146,36);
+    if(prog<1)requestAnimationFrame(draw);
+  }
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){prog=0;draw();}}),{threshold:0.3});
+  io.observe(c);
+})();
+</script>
+</body>
+</html>

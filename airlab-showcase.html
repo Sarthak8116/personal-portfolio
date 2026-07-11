@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sensor-Free UAV Proximity | Sarthak Jain</title>
+<meta name="description" content="Giving drones a sense of touch. Estimating distance and angle to nearby surfaces from aerodynamic feedback alone, no extra sensors. AirLab, CMU.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0a;--bg-card:#111111;--text:#e8e4de;--text-muted:#8a857e;--accent:#ff3c2e;--accent-glow:rgba(255,60,46,0.15);--border:rgba(255,255,255,0.06);--serif:'Instrument Serif',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--ease:cubic-bezier(0.22,1,0.36,1)}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.5rem 3rem;display:flex;justify-content:space-between;align-items:center;background:rgba(10,10,10,0.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+nav .logo{font-family:var(--mono);font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-muted);text-decoration:none}nav .logo span{color:var(--accent)}
+nav .nav-links{display:flex;gap:2rem;list-style:none}nav .nav-links a{font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;transition:color 0.3s}nav .nav-links a:hover{color:var(--text)}
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-direction:column;text-align:center;padding:0 3rem}
+#heroCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:0.9}
+.hero-content{position:relative;z-index:2;max-width:760px}
+.hero-tag{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.45em;text-transform:uppercase;color:var(--accent);margin-bottom:2rem;display:inline-flex;align-items:center;gap:0.8rem;padding:0.5rem 1.2rem;border:1px solid rgba(255,60,46,0.25);border-radius:3px;background:rgba(255,60,46,0.04)}
+.hero-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease infinite}
+.hero h1{font-family:var(--serif);font-size:clamp(2.8rem,7vw,6rem);font-weight:400;line-height:1.02;letter-spacing:-0.03em;margin-bottom:1.5rem}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero-sub{font-family:var(--serif);font-size:clamp(1.2rem,2.5vw,1.7rem);font-weight:400;color:var(--text-muted);margin-bottom:2rem;font-style:italic}
+.hero-desc{font-size:1rem;color:var(--text-muted);max-width:560px;margin:0 auto;line-height:1.8}
+.hero-meta{margin-top:3rem;display:flex;gap:2.5rem;justify-content:center;flex-wrap:wrap}
+.hero-meta div{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)}
+.hero-meta div span{display:block;color:var(--accent);font-size:0.9rem;margin-bottom:0.3rem;letter-spacing:0.05em}
+section{padding:7rem 3rem;max-width:1100px;margin:0 auto}
+.section-label{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;display:flex;align-items:center;gap:1rem}
+.section-label::before{content:'';width:30px;height:1px;background:var(--accent)}
+.section-title{font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);font-weight:400;line-height:1.15;margin-bottom:1.6rem;max-width:760px}
+.section-desc{font-size:0.98rem;color:var(--text-muted);max-width:680px;line-height:1.85}
+.section-desc b{color:var(--text);font-weight:500}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:3rem}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:2.4rem;position:relative;overflow:hidden;transition:border-color 0.3s}
+.card:hover{border-color:rgba(255,60,46,0.22)}
+.card .v-num{font-family:var(--serif);font-size:4rem;color:var(--accent);opacity:0.08;position:absolute;top:0.4rem;right:1.4rem;line-height:1}
+.card h3{font-family:var(--sans);font-weight:500;font-size:1.05rem;margin-bottom:0.8rem}
+.card p{font-size:0.88rem;color:var(--text-muted);line-height:1.75}
+.figure{margin-top:3rem;border:1px solid var(--border);border-radius:4px;background:var(--bg-card);overflow:hidden}
+.figure canvas{width:100%;display:block}
+.figure .cap{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);padding:1rem 1.5rem;border-top:1px solid var(--border)}
+.figure .cap span{color:var(--accent)}
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-top:3rem}
+.stat-strip .stat{background:var(--bg-card);padding:2rem 1.5rem}
+.stat .num{font-family:var(--serif);font-size:2.6rem;color:var(--accent);line-height:1}
+.stat .lab{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-top:0.8rem;line-height:1.5}
+.skills-row{display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:2rem}
+.skill-tag{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.05em;padding:0.4rem 1rem;border:1px solid var(--border);border-radius:3px;color:var(--text-muted);transition:all 0.3s var(--ease)}
+.skill-tag:hover{border-color:var(--accent);color:var(--text);background:var(--accent-glow)}
+footer{padding:4rem 3rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto}
+footer .footer-text{font-size:0.8rem;color:var(--text-muted)}footer .footer-text a{color:var(--accent);text-decoration:none}
+@keyframes pulse{0%,100%{opacity:0.4;transform:scale(0.8)}50%{opacity:1;transform:scale(1.2)}}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s var(--ease),transform 0.7s var(--ease)}.reveal.visible{opacity:1;transform:translateY(0)}
+@media(max-width:900px){nav{padding:1rem 1.5rem}nav .nav-links{display:none}section{padding:4rem 1.5rem}.grid-2{grid-template-columns:1fr}.stat-strip{grid-template-columns:1fr 1fr}footer{flex-direction:column;gap:1rem;text-align:center}.hero-meta{gap:1.5rem}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Sarthak Jain <span>//</span> Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="index.html">&larr; Back</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-tag">Robotics Autonomy &middot; AirLab, CMU</div>
+    <h1>Drones that <em>feel</em> their surroundings</h1>
+    <p class="hero-sub">Sensing nearby surfaces from aerodynamics, no extra sensors</p>
+    <p class="hero-desc">Near a wall or floor, a drone's airflow changes and its thrust shifts. I turn that shift into distance and angle to the surface, so the drone senses without a camera or LiDAR.</p>
+    <div class="hero-meta">
+      <div><span>&lt; 3 cm</span> distance error</div>
+      <div><span>&lt; 4&deg;</span> angle error</div>
+      <div><span>0</span> sensors added</div>
+    </div>
+  </div>
+</section>
+
+<section id="overview">
+  <div class="reveal">
+    <p class="section-label">Overview</p>
+    <h2 class="section-title">Proximity from thrust, not sensors</h2>
+    <p class="section-desc">Research at CMU's <b>AirLab</b>. A drone has no cheap way to sense a surface it isn't looking at. But ground and wall effects deform its thrust and control signals in a structured way. I model that mapping to estimate distance and incidence angle, turning the propulsion system itself into a proximity sensor.</p>
+  </div>
+
+  <div class="figure reveal">
+    <canvas id="thrustCanvas" height="300"></canvas>
+    <div class="cap"><span>Fig 1</span> &mdash; As the drone nears a surface (right), the thrust signature lifts and deforms. That deviation is the signal.</div>
+  </div>
+
+  <div class="grid-2 reveal" style="margin-top:2rem">
+    <div class="card"><span class="v-num">01</span><h3>Physics-informed</h3><p>Distance and angle estimation posed as a learning problem over thrust, RPM, and IMU time-series, with aerodynamic residuals baked into the loss.</p></div>
+    <div class="card"><span class="v-num">02</span><h3>CFD digital twin</h3><p>An ANSYS Fluent model of near-surface airflow auto-generates a 120k-sample labeled training corpus.</p></div>
+    <div class="card"><span class="v-num">03</span><h3>State estimation</h3><p>A temporal encoder does recursive estimation, reaching sub-3cm distance and under 4&deg; angle error.</p></div>
+    <div class="card"><span class="v-num">04</span><h3>Sim-to-real</h3><p>Domain randomization closes the gap so the model trained in sim holds up on real hardware.</p></div>
+  </div>
+
+  <div class="figure reveal" style="margin-top:2rem">
+    <canvas id="estCanvas" height="300"></canvas>
+    <div class="cap"><span>Fig 2</span> &mdash; Predicted vs true distance to surface. <span style="color:var(--text-muted)">Grey:</span> ground truth. <span style="color:var(--accent)">Red:</span> model estimate.</div>
+  </div>
+
+  <div class="stat-strip reveal">
+    <div class="stat"><div class="num">&lt;3cm</div><div class="lab">Distance error</div></div>
+    <div class="stat"><div class="num">&lt;4&deg;</div><div class="lab">Angle error</div></div>
+    <div class="stat"><div class="num">120K</div><div class="lab">Simulated training samples</div></div>
+    <div class="stat"><div class="num">0</div><div class="lab">Added sensors</div></div>
+  </div>
+
+  <div class="skills-row reveal" style="margin-top:2.5rem">
+    <span class="skill-tag">PyTorch</span>
+    <span class="skill-tag">Physics-Informed ML</span>
+    <span class="skill-tag">ANSYS Fluent (CFD)</span>
+    <span class="skill-tag">State Estimation</span>
+    <span class="skill-tag">Sim-to-Real</span>
+    <span class="skill-tag">Time-Series</span>
+    <span class="skill-tag">UAV / Drones</span>
+    <span class="skill-tag">Python</span>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-text">Robotics Autonomy &middot; AirLab, CMU &copy; 2026</div>
+  <div class="footer-text"><a href="index.html">Back to Portfolio &uarr;</a></div>
+</footer>
+
+<script>
+const observer=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')}),{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+function fit(c){const r=window.devicePixelRatio||1,rc=c.getBoundingClientRect();c.width=rc.width*r;c.height=rc.height*r;const ctx=c.getContext('2d');ctx.setTransform(r,0,0,r,0,0);return{ctx,W:rc.width,H:rc.height};}
+
+// HERO — drone hovering above a surface with airflow streamlines
+(function(){
+  const c=document.getElementById('heroCanvas');let S=fit(c),ctx=S.ctx,W=S.W,H=S.H;
+  window.addEventListener('resize',()=>{S=fit(c);ctx=S.ctx;W=S.W;H=S.H;});
+  let f=0;
+  function draw(){
+    f++;ctx.clearRect(0,0,W,H);
+    const cx=W/2, dy=H*0.42+Math.sin(f*0.02)*10, surf=H*0.78;
+    // surface line
+    ctx.beginPath();ctx.moveTo(0,surf);ctx.lineTo(W,surf);ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.lineWidth=1;ctx.stroke();
+    // airflow streamlines from rotors curving out along surface
+    for(let s=-1;s<=1;s+=2){
+      for(let k=0;k<5;k++){
+        ctx.beginPath();
+        const x0=cx+s*40;
+        for(let t=0;t<=1;t+=0.05){
+          const x=x0+s*t*t*(160+k*30);
+          const y=dy+ t*(surf-dy) - Math.sin(t*Math.PI)*(6+k*3);
+          if(t===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+        }
+        const a=0.05+0.04*Math.sin(f*0.05+k);
+        ctx.strokeStyle='rgba(255,60,46,'+a.toFixed(3)+')';ctx.lineWidth=1;ctx.stroke();
+      }
+    }
+    // drone body
+    ctx.strokeStyle='rgba(232,228,222,0.25)';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(cx-46,dy);ctx.lineTo(cx+46,dy);ctx.stroke();
+    for(const s of [-1,1]){
+      ctx.beginPath();ctx.ellipse(cx+s*46,dy,18,4,0,0,Math.PI*2);
+      ctx.strokeStyle='rgba(255,60,46,0.4)';ctx.stroke();
+    }
+    ctx.fillStyle='rgba(232,228,222,0.3)';ctx.fillRect(cx-8,dy-5,16,10);
+    // distance tick
+    ctx.setLineDash([3,4]);ctx.beginPath();ctx.moveTo(cx,dy+6);ctx.lineTo(cx,surf);ctx.strokeStyle='rgba(255,60,46,0.3)';ctx.stroke();ctx.setLineDash([]);
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// FIG 1 — thrust signature deforming as drone approaches surface
+(function(){
+  const c=document.getElementById('thrustCanvas');if(!c)return;let S=fit(c),ctx=S.ctx,W=S.W,H=S.H;
+  window.addEventListener('resize',()=>{S=fit(c);ctx=S.ctx;W=S.W;H=S.H;});
+  let f=0;
+  function draw(){
+    f++;ctx.clearRect(0,0,W,H);const m=54,baseY=H-46,plotW=W-2*m,plotH=H-92;
+    ctx.beginPath();ctx.moveTo(m,baseY);ctx.lineTo(W-m,baseY);ctx.strokeStyle='rgba(255,255,255,0.12)';ctx.lineWidth=1;ctx.stroke();
+    ctx.font='400 9px "JetBrains Mono"';ctx.fillStyle='rgba(232,228,222,0.4)';ctx.textAlign='center';
+    ctx.fillText('FAR FROM SURFACE',m+plotW*0.22,baseY+18);ctx.fillText('NEAR SURFACE',m+plotW*0.82,baseY+18);
+    // thrust trace: flat then rising ground effect with ripple
+    ctx.beginPath();
+    for(let i=0;i<=plotW;i++){
+      const t=i/plotW;
+      const ge=Math.pow(Math.max(0,(t-0.5)/0.5),2)*plotH*0.55; // ground effect lift
+      const rip=Math.sin((i*0.15)-f*0.12)*(2+ge*0.06);
+      const y=baseY-plotH*0.18-ge-rip;
+      if(i===0)ctx.moveTo(m+i,y);else ctx.lineTo(m+i,y);
+    }
+    ctx.strokeStyle='rgba(255,60,46,0.75)';ctx.lineWidth=1.6;ctx.stroke();
+    ctx.font='400 9px "JetBrains Mono"';ctx.fillStyle='rgba(255,60,46,0.6)';ctx.textAlign='left';
+    ctx.fillText('THRUST SIGNATURE',m,32);
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// FIG 2 — predicted vs true distance
+(function(){
+  const c=document.getElementById('estCanvas');if(!c)return;let S=fit(c),ctx=S.ctx,W=S.W,H=S.H;
+  window.addEventListener('resize',()=>{S=fit(c);ctx=S.ctx;W=S.W;H=S.H;});
+  let f=0;
+  function draw(){
+    f++;ctx.clearRect(0,0,W,H);const m=54,baseY=H-46,plotW=W-2*m,plotH=H-92;
+    ctx.beginPath();ctx.moveTo(m,baseY);ctx.lineTo(W-m,baseY);ctx.strokeStyle='rgba(255,255,255,0.12)';ctx.lineWidth=1;ctx.stroke();
+    ctx.font='400 9px "JetBrains Mono"';ctx.fillStyle='rgba(232,228,222,0.4)';ctx.textAlign='center';ctx.fillText('TIME',m+plotW/2,baseY+18);
+    // true = smooth descent curve, pred = true + small noise closely tracking
+    function tv(t){return baseY-plotH*(0.15+0.7*(0.5+0.5*Math.sin(t*Math.PI*1.4-1.2)));}
+    ctx.beginPath();for(let i=0;i<=plotW;i++){const t=i/plotW;const y=tv(t);if(i===0)ctx.moveTo(m+i,y);else ctx.lineTo(m+i,y);}
+    ctx.strokeStyle='rgba(180,180,175,0.5)';ctx.lineWidth=2;ctx.stroke();
+    ctx.beginPath();for(let i=0;i<=plotW;i++){const t=i/plotW;const y=tv(t)+Math.sin(i*0.4+f*0.1)*3.2*(1-t*0.3);if(i===0)ctx.moveTo(m+i,y);else ctx.lineTo(m+i,y);}
+    ctx.strokeStyle='rgba(255,60,46,0.8)';ctx.lineWidth=1.4;ctx.stroke();
+    ctx.textAlign='left';ctx.font='400 9px "JetBrains Mono"';
+    ctx.fillStyle='rgba(180,180,175,0.5)';ctx.fillRect(m,26,10,10);ctx.fillText('TRUE',m+16,32);
+    ctx.fillStyle='rgba(255,60,46,0.8)';ctx.fillRect(m+90,26,10,10);ctx.fillText('PREDICTED',m+106,32);
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+</body>
+</html>
