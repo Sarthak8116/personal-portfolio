@@ -233,7 +233,7 @@ body.co .cur{opacity:1}
 <div class="pg an">
 <a href="airlab-showcase.html" class="pc"><div class="pn">00</div><h3 class="pt">Sensor-Free UAV Proximity</h3><p class="pp">Physics-Informed ML + CFD + State Estimation</p><div class="pa">&nearr;</div></a>
 <a href="eeg-sync-showcase.html" class="pc"><div class="pn">01</div><h3 class="pt">EEG Trigger Sync</h3><p class="pp">Neuroscience + Clock-Drift Correction + Python</p><div class="pa">&nearr;</div></a>
-<a href="stealth-circuit-showcase.html" class="pc"><div class="pn">02</div><h3 class="pt">AI Circuit Design</h3><p class="pp">Stealth Startup</p><div class="pa">&nearr;</div></a>
+<a href="kantor-cv-showcase.html" class="pc"><div class="pn">02</div><h3 class="pt">Fireblight CV Research</h3><p class="pp">YOLO + ROS2 + farm-ng Winner ($25K)</p><div class="pa">&nearr;</div></a>
 <a href="AI_Air_Hockey_Showcase.html" class="pc"><div class="pn">03</div><h3 class="pt">AI Air Hockey</h3><p class="pp">CV + Stepper Motors + Build18</p><div class="pa">&nearr;</div></a>
 <a href="shadow-fight-showcase_2.html" class="pc"><div class="pn">04</div><h3 class="pt">Shadow Fight</h3><p class="pp">QNX RTOS + Dual Pi + Projection</p><div class="pa">&nearr;</div></a>
 <a href="cadly-showcase.html" class="pc"><div class="pn">05</div><h3 class="pt">CADly</h3><p class="pp">Multi-Model AI + DFM Analysis</p><div class="pa">&nearr;</div></a>
@@ -260,7 +260,7 @@ body.co .cur{opacity:1}
 <div class="ab">
 <h3>Who I Am</h3>
 <p>Sophomore at Carnegie Mellon studying Electrical &amp; Computer Engineering with an additional major in Robotics. I build things at the intersection of hardware and software: robots that see and act, AI tools that solve real problems, and embedded systems that work under constraints.</p>
-<p>Currently leading the electrical subteam at IEEExCMU, researching agricultural robotics at Kantor Lab, and building an AI-native circuit design tool in stealth. Previously interned at Fleeca where I designed tooling that improved wiring throughput by 22%, and co-authored a published paper on solar panel efficiency with a Harvard researcher.</p>
+<p>Currently researching sensor-free UAV autonomy at CMU's AirLab, agricultural computer vision at Kantor Lab, and neural-signal synchronization at the ForAll Lab. Previously interned at Fleeca where I designed tooling that improved wiring throughput by 22%, and co-authored a published paper on solar panel efficiency with a Harvard researcher.</p>
 </div>
 <div class="ab">
 <h3>Experience</h3>
@@ -407,4 +407,14 @@ body.co .cur{opacity:1}
         tick();
       });
     }
-    set
+    setInterval(function(){
+      if(busy)return;busy=true;
+      wi=(wi+1)%targets.length;
+      var chars=wi===1?hiChars:enChars;
+      scramble(fn,targets[wi],chars).then(function(){busy=false});
+    },3200);
+  }
+})();
+</script>
+</body>
+</html>
