@@ -93,6 +93,7 @@
       \resumeItemListStart
         \resumeItem{\textbf{Coursework:} Signals \& Systems, Structure \& Design of Digital Systems, Introduction to Computer Systems, Embedded Systems,
         Computer Vision, Fundamentals of Controls, Electronics \& Circuits, Principles of Imperative Computation, Linear Algebra}
+        \resumeItem{\textbf{Teaching Assistant, 18-290 Signals and Systems (Fall 2026):} Supported \textbf{100+ students}, by teaching recitations and office hours on Fourier/Laplace transforms, FFT, sampling, and filter design, and by writing and grading problem sets and exams.}
       \resumeItemListEnd
   \resumeSubHeadingListEnd
 
@@ -102,36 +103,21 @@
 
     \resumeLine{AirLab, CMU Robotics Institute}{\,| Robotics Autonomy Researcher}{May 2026 -- Present}
       \resumeItemListStart
-        \resumeItem{Enabled a drone to sense nearby walls with \textbf{zero added sensors} (no camera or LiDAR), reaching \textbf{under 3 cm} distance and \textbf{under 4\textdegree} angle error, by training a \textbf{physics-informed PyTorch} model on its own thrust, RPM, and IMU signals.}
-        \resumeItem{Produced a \textbf{120,000-sample} labeled training set without risking hardware, by building an \textbf{ANSYS Fluent CFD digital twin} of near-surface airflow and closing the sim-to-real gap with domain randomization.}
-      \resumeItemListEnd
-
-    \resumeLine{Teaching Assistant, 18-290 Signals and Systems}{\,| Carnegie Mellon University, ECE}{Fall 2026}
-      \resumeItemListStart
-        \resumeItem{Supported \textbf{100+ students}, by teaching recitations and office hours on Fourier/Laplace transforms, FFT, sampling, and filters.}
-        \resumeItem{Assessed student mastery of signal processing each week, by writing and grading problem sets and exams.}
+        \resumeItem{Enabled a drone to sense nearby walls with \textbf{zero added sensors} (no camera or LiDAR), reaching \textbf{under 3 cm} distance and \textbf{under 4\textdegree} angle error, by independently prototyping and evaluating a \textbf{physics-informed machine learning} model in \textbf{PyTorch} that processes the drone's own thrust, RPM, and IMU \textbf{sensor signals}.}
+        \resumeItem{Tracked distance continuously from noisy time-series data, by designing a temporal-encoder \textbf{state-estimation algorithm} that runs recursive \textbf{inference} in real time.}
+        \resumeItem{Produced a \textbf{120,000-sample} labeled training set without risking hardware, by applying \textbf{numerical methods} in an \textbf{ANSYS Fluent CFD} digital twin of near-surface airflow and closing the sim-to-real gap with domain randomization.}
       \resumeItemListEnd
 
     \resumeLine{ForAll Lab, Carnegie Mellon}{\,| Neuroscience / Signals Engineer}{Summer 2026}
       \resumeItemListStart
-        \resumeItem{Aligned brain-implant recordings from separate machines to \textbf{within 2 ms}, a \textbf{$\sim$30$\times$} reduction in timing spread, by modeling clock drift with least-squares fitting in \textbf{NumPy/SciPy}.}
-        \resumeItem{Recovered \textbf{100\% of event markers}, by de-clustering noisy trigger bursts and adding automated data validation.}
+        \resumeItem{Aligned brain-computer-interface recordings from separate machines to \textbf{within 2 ms}, a \textbf{$\sim$30$\times$} reduction in timing spread, by developing a \textbf{signal-processing algorithm} that models clock drift with \textbf{least-squares regression} in \textbf{NumPy/SciPy}.}
+        \resumeItem{Recovered \textbf{100\% of event markers} with \textbf{0 mismatched triggers} in validated sessions, by de-clustering noisy trigger bursts and building an automated evaluation pipeline that flags dropped triggers and quarantines out-of-tolerance data.}
       \resumeItemListEnd
 
     \resumeLine{Kantor Lab, Carnegie Mellon}{\,| Research Assistant}{2025 -- Present}
       \resumeItemListStart
-        \resumeItem{Helped \textbf{win the Farm Robotics Challenge (\$25K)}, by deploying real-time \textbf{YOLOv8} inference that detects and grades apple-tree disease on an autonomous robot.}
-        \resumeItem{Automated marking of infected branches, by building the \textbf{ROS 2} pipeline linking detections to robotic-arm motion.}
-      \resumeItemListEnd
-
-    \resumeLine{IEEE x CMU}{\,| Electrical Lead, animatronic control system}{Mar 2025 -- Present}
-      \resumeItemListStart
-        \resumeItem{Delivered a real-time animatronic controller leading a \textbf{6-person} team, by architecting its \textbf{RTOS task system in embedded C}.}
-      \resumeItemListEnd
-
-    \resumeLine{Fleeca}{\,| Engineering Intern}{Jan 2023 -- Jul 2023}
-      \resumeItemListStart
-        \resumeItem{Raised production throughput \textbf{22\%}, by designing an automated wire cutting/stripping machine and custom fixtures.}
+        \resumeItem{Helped \textbf{win the Farm Robotics Challenge (\$25K)}, by co-training and deploying real-time \textbf{YOLOv8 (PyTorch) computer-vision inference} that detects and grades apple-tree disease on an autonomous robot's onboard compute.}
+        \resumeItem{Closed the loop from perception to actuation, by building the \textbf{ROS 2} (Python/C++) pipeline that turns detections into robotic-arm motion, and \textbf{profiling} and fixing \textbf{latency} and synchronization bottlenecks between vision and control.}
       \resumeItemListEnd
 
   \resumeSubHeadingListEnd
