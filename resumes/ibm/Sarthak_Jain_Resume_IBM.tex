@@ -81,96 +81,94 @@
 \begin{center}
     \textbf{\Huge \scshape Sarthak Jain} \\ \vspace{2pt}
     \small 412-427-8570 $|$ \href{mailto:sjain4@andrew.cmu.edu}{sjain4@andrew.cmu.edu} $|$
-    \href{https://www.linkedin.com/in/sarthak-jain-72823a1b3}{linkedin.com/in/sarthak-jain-72823a1b3} $|$
-    \href{https://github.com/Sarthak8116}{github.com/Sarthak8116}
+    \href{https://www.linkedin.com/in/sarthak-jain-72823a1b3}{linkedin.com/in/sarthak-jain} $|$
+    \href{https://github.com/Sarthak8116}{github.com/Sarthak8116} $|$
+    \href{https://sarthak-jain.com}{sarthak-jain.com}
 \end{center}
 
 \vspace{-6pt}
-\noindent\small{Published researcher who makes \textbf{AI and signal-processing workloads run fast on resource-limited hardware}: built a pipelined
-\textbf{RISC-V CPU}, ran a quantized neural net on a microcontroller in \textbf{under 8 ms}, and aligned brain signals to \textbf{under 2 ms}.}
+\noindent\small{Published researcher who makes \textbf{AI and signal-processing workloads run fast on resource-limited hardware}: shipped a quantized
+neural net on a microcontroller in \textbf{under 8 ms}, built a pipelined \textbf{RISC-V CPU}, and aligned brain recordings to \textbf{under 2 ms}.}
 
 %-----------EDUCATION-----------
 \section{Education}
   \resumeSubHeadingListStart
-    \resumeLine{Carnegie Mellon University}{\,| B.S. Electrical \& Computer Engineering + Robotics \,|\, \textbf{GPA 3.8/4.0}}{Expected May 2028}
+    \resumeLine{Carnegie Mellon University}{\,| B.S. Electrical \& Computer Engineering and Robotics \,|\, \textbf{GPA 3.8/4.0}}{Expected May 2028}
       \resumeItemListStart
-        \resumeItem{\textbf{Coursework:} Logic \& Circuit Design (digital systems, HDL), Signals \& Systems (Fourier/FFT, filtering, sampling),
-        Imperative Computation (algorithms \& data structures), Linear Algebra, Differential Equations, Multivariable Calculus}
+        \resumeItem{\textbf{Coursework:} Signals \& Systems, Structure \& Design of Digital Systems, Introduction to Computer Systems, Embedded Systems,
+        Computer Vision, Fundamentals of Controls, Electronics \& Circuits, Principles of Imperative Computation, Linear Algebra}
       \resumeItemListEnd
   \resumeSubHeadingListEnd
 
-%-----------RESEARCH-----------
-\section{Research Experience}
+%-----------EXPERIENCE-----------
+\section{Experience}
   \resumeSubHeadingListStart
 
-    \resumeLine{AirLab, Carnegie Mellon}{\,| Robotics Autonomy Researcher: physics-informed ML}{May 2026 -- Present}
+    \resumeLine{Scout Me}{\,| Embedded ML Engineer (Remote)}{2024 -- 2025}
       \resumeItemListStart
-        \resumeItem{Turned a drone's own motor and thrust signals into a \textbf{proximity sensor}, detecting nearby walls and floors with \textbf{zero added sensors}
-        via a \textbf{physics-informed PyTorch} time-series model (\textbf{$<$3 cm} distance, \textbf{$<$4\textdegree} angle error).}
-        \resumeItem{Built an \textbf{ANSYS Fluent CFD digital twin} that auto-generated a \textbf{120K-sample} training set; closed the sim-to-real gap with domain randomization.}
+        \resumeItem{Built a wearable vest that tracks an athlete's vital signs during play, fusing \textbf{7 sensor channels} (heart rate, SpO2, HRV, temperature, motion). \textbf{Now used by 500+ blind football players.}}
+        \resumeItem{Movement was corrupting the readings; added a denoising autoencoder and adaptive \textbf{Kalman filter} that cut that noise \textbf{43\%}.}
+        \resumeItem{\textbf{Pruned and INT8-quantized} the model so it runs on the vest's microcontroller instead of a phone: \textbf{under 8 ms per reading} on a \textbf{sub-milliwatt} power budget.}
       \resumeItemListEnd
 
-    \resumeLine{ForAll Lab, Carnegie Mellon}{\,| Research Intern: signal processing for a deep-brain BCI}{Mar 2026 -- Present}
+    \resumeLine{AirLab, CMU Robotics Institute}{\,| Robotics Autonomy Researcher}{May 2026 -- Present}
       \resumeItemListStart
-        \resumeItem{Synchronized a task computer and a neural recorder to \textbf{under 2 ms}, so each brain signal lines up with the event that caused it.}
-        \resumeItem{Modeled clock drift with least-squares fitting in \textbf{NumPy/SciPy}, cutting timing spread \textbf{$\sim$30$\times$}; de-noised trigger bursts for \textbf{100\% marker recovery} and automated data validation.}
+        \resumeItem{Taught a drone to sense a nearby wall's distance and angle from its \textbf{own motor and IMU data alone}. No camera, no LiDAR.}
+        \resumeItem{Trained a \textbf{physics-informed PyTorch} model on \textbf{120,000 simulated flights} from an ANSYS CFD digital twin instead of crashed hardware; transferred it to the real aircraft at \textbf{under 3 cm} and \textbf{under 4\textdegree} error.}
       \resumeItemListEnd
 
-    \resumeLine{Kantor Lab, Carnegie Mellon}{\,| Research Assistant: real-time AI inference on a farm robot}{2025 -- Present}
+    \resumeLine{ForAll Lab, Carnegie Mellon}{\,| Neuroscience / Signals Engineer}{Summer 2026}
       \resumeItemListStart
-        \resumeItem{Trained and deployed a real-time \textbf{YOLOv8} model that detects and grades fireblight disease in apple trees; team \textbf{won the Farm Robotics Challenge (\$25K)}.}
-        \resumeItem{Built the \textbf{ROS 2} pipeline turning detections into robotic-arm motion; profiled and fixed vision-to-control latency and sync issues.}
+        \resumeItem{A brain-implant study recorded on several machines whose clocks drifted apart, so the data no longer lined up. Wrote the correction
+        (least-squares drift model in \textbf{NumPy/SciPy}) that holds every stream \textbf{within 2 ms}, cutting timing spread \textbf{$\sim$30$\times$} with \textbf{100\% event markers recovered}.}
       \resumeItemListEnd
 
-    \resumeLine{Photovoltaic Efficiency Research}{\,| Co-Author, with a Harvard PhD researcher}{Jan 2023 -- Nov 2024}
+    \resumeLine{Kantor Lab, Carnegie Mellon}{\,| Research Assistant}{2025 -- Present}
       \resumeItemListStart
-        \resumeItem{Simulated solar irradiance across \textbf{spectral and angular} dependencies; \textbf{co-authored a paper published} in an international renewable-energy journal.}
+        \resumeItem{Deployed real-time \textbf{YOLOv8} inference on an autonomous farm robot that finds diseased apple branches and directs a robotic arm to mark them (\textbf{ROS 2}); team \textbf{won the Farm Robotics Challenge (\$25K)}.}
+      \resumeItemListEnd
+
+    \resumeLine{Carnegie Mellon University, ECE}{\,| Teaching Assistant, 18-290 Signals and Systems}{Fall 2026}
+      \resumeItemListStart
+        \resumeItem{Teach recitations and office hours for \textbf{100+ students}: Fourier and Laplace transforms, the FFT, sampling, and filter design. Write and grade problem sets and exams.}
       \resumeItemListEnd
 
   \resumeSubHeadingListEnd
 
 %-----------PROJECTS-----------
-\section{Technical Projects}
+\section{Projects}
   \resumeSubHeadingListStart
 
     \resumeProjectHeading
-      {\textbf{Edge-AI Health Vest} $|$ \emph{TinyML, INT8 quantization, sensor fusion, Kalman filtering}}{}
+      {\textbf{Pipelined RISC-V Processor} $|$ \emph{SystemVerilog, computer architecture, Vivado, QuestaSim}}{2025}
       \resumeItemListStart
-        \resumeItem{Ran a \textbf{pruned, INT8-quantized neural network on a microcontroller} in \textbf{under 8 ms} on a \textbf{sub-milliwatt} budget, offline.}
-        \resumeItem{Fused \textbf{7 biosignal channels}; a denoising autoencoder + adaptive Kalman filter cut motion noise \textbf{43\%}. Partnered to deploy to \textbf{500+ blind athletes}.}
+        \resumeItem{Built a working CPU (RV32I) from the instruction set up, with hazard-detection and forwarding logic that keeps \textbf{five instructions in flight at once} correct. Synthesized in Vivado; verified cycle by cycle with \textbf{0 hazard failures}.}
       \resumeItemListEnd
 
     \resumeProjectHeading
-      {\textbf{5-Stage Pipelined RISC-V Processor} $|$ \emph{SystemVerilog, computer architecture, Vivado, QuestaSim}}{}
+      {\textbf{Shadow Fight} $|$ \emph{C++17, QNX RTOS, OpenCV, dual Raspberry Pi, real-time systems}}{2025}
       \resumeItemListStart
-        \resumeItem{Designed a CPU from scratch (RV32I) that works on \textbf{5 instructions at once}, with hazard-detection and forwarding logic to stay correct without needless stalls.}
-        \resumeItem{Synthesized in \textbf{Xilinx Vivado}; verified \textbf{cycle-accurately} in QuestaSim with \textbf{0 hazard failures}, plus a pipeline visualizer.}
+        \resumeItem{A game you play against your own shadow. Two Raspberry Pis on the \textbf{QNX real-time OS} read your silhouette from a camera and drive an opponent that reacts in \textbf{under 80 ms}, linked by a lean \textbf{50-byte UDP protocol}.}
       \resumeItemListEnd
 
     \resumeProjectHeading
-      {\textbf{Shadow Fight: Real-Time Vision System} $|$ \emph{C++17, QNX RTOS, OpenCV, dual Raspberry Pi, UDP}}{}
+      {\textbf{AI Air Hockey} $|$ \emph{Computer vision, real-time control, OpenCV, embedded C}}{2025}
       \resumeItemListStart
-        \resumeItem{Wrote low-level \textbf{C++17} split across two Raspberry Pis on the \textbf{QNX real-time OS} with \textbf{under 80 ms} camera-to-screen latency, using a lean \textbf{$\sim$50-byte UDP protocol} at 30 fps; cross-compiled with CMake.}
-      \resumeItemListEnd
-
-    \resumeProjectHeading
-      {\textbf{AI Air Hockey Opponent} $|$ \emph{Computer vision, trajectory prediction, stepper motion control}}{}
-      \resumeItemListStart
-        \resumeItem{Robot tracks the puck, predicts its path (with wall bounces), and moves a 2-axis gantry to block it in \textbf{under 50 ms}; profiled the full capture-to-motor loop to remove bottlenecks.}
+        \resumeItem{A robot that plays air hockey against a person: an overhead camera tracks the puck, predicts its path (including wall bounces), and drives the paddle to meet it in \textbf{under 50 ms}. Profiled the full camera-to-motor loop to remove bottlenecks.}
       \resumeItemListEnd
 
   \resumeSubHeadingListEnd
 
-%-----------LEADERSHIP / INDUSTRY-----------
-\section{Engineering \& Leadership}
+%-----------PUBLICATION & LEADERSHIP-----------
+\section{Publication \& Leadership}
   \resumeSubHeadingListStart
-    \resumeLine{IEEE x CMU}{\,| Electrical Lead: animatronic control system}{Mar 2025 -- Present}
+    \resumeLine{Photovoltaic Panel Efficiency}{\,| Co-Author, international renewable-energy journal}{2023 -- 2024}
+      \resumeItemListStart
+        \resumeItem{Modeled solar irradiance across spectral (wavelength) and angular dependencies with a Harvard PhD researcher; \textbf{peer-reviewed}.}
+      \resumeItemListEnd
+    \resumeLine{IEEE x CMU}{\,| Electrical Lead, animatronic control system}{Mar 2025 -- Present}
       \resumeItemListStart
         \resumeItem{Led a \textbf{6-person} team; architected the \textbf{RTOS task system in embedded C} coordinating motors, audio, and sensors.}
-      \resumeItemListEnd
-    \resumeLine{Fleeca}{\,| Engineering Intern}{Jan 2023 -- Jul 2023}
-      \resumeItemListStart
-        \resumeItem{Designed an automated wire cutting/stripping system and custom fixtures, \textbf{raising production throughput 22\%}.}
       \resumeItemListEnd
   \resumeSubHeadingListEnd
 
@@ -178,11 +176,10 @@
 \section{Technical Skills}
  \begin{itemize}[leftmargin=0.15in, label={}]
     \small{\item{
-     \textbf{Languages}{: C/C++ (C++17), Python, SystemVerilog/Verilog, Embedded C, Rust, MATLAB} \\
-     \textbf{AI \& Inference}{: PyTorch, YOLOv8, OpenCV, INT8 quantization, pruning, TinyML, physics-informed ML} \\
-     \textbf{Signal Processing \& Math}{: Fourier/FFT, filtering, Kalman filtering, state estimation, time-series alignment, NumPy/SciPy, CFD} \\
-     \textbf{Hardware \& Architecture}{: RISC-V, pipelined CPU design, RTL design/verification (Vivado, QuestaSim), microcontrollers, PCB (Altium)} \\
-     \textbf{Systems \& Tools}{: Linux, QNX RTOS, ROS 2, multithreading, POSIX sockets, latency profiling, CMake, cross-compilation, Git}
+     \textbf{AI Systems \& Inference Optimization}{: AI inference, INT8 quantization, pruning, TinyML, edge inference, TensorRT, kernel-level optimization, latency \& power profiling, benchmarking, PyTorch, YOLOv8, physics-informed ML, sim-to-real} \\
+     \textbf{Signal Processing \& Numerical Methods}{: Fourier \& Laplace transforms, DFT/FFT, sampling, filter design, spectral analysis, sensor fusion, Kalman filtering, state estimation, robust regression, time-series analysis, MATLAB} \\
+     \textbf{Computer Architecture \& Digital Design}{: SystemVerilog, RTL design, pipelining, hazard detection \& forwarding, testbench verification, RISC-V, FPGA, Vivado, QuestaSim} \\
+     \textbf{Low-Level \& Systems Programming}{: C/C++, Python, Rust, embedded C firmware, QNX RTOS, Linux, device drivers, I2C/SPI/UART, multithreading, POSIX sockets, CMake, Git, Docker, NumPy/SciPy, OpenCV, ROS 2}
     }}
  \end{itemize}
 
